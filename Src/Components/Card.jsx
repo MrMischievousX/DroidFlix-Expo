@@ -5,7 +5,7 @@ import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
 const fetchFonts = async () => {
   return Font.loadAsync({
-    Bebas: require("../../assets/fonts/Bebas.ttf"),
+    Bebas: require("../../assets/Fonts/Bebas.ttf"),
   });
 };
 export default function Card({ title, fetchUrl, thumb }) {
@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     marginBottom: 10,
   },
+
   viewStyle: {
     height: 120,
     width: 200,

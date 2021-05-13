@@ -62,7 +62,6 @@ function TvShowStackScreen() {
   );
 }
 
-const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function App() {
@@ -80,35 +79,46 @@ export default function App() {
       <NavigationContainer>
         <Tab.Navigator
           screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
+            tabBarIcon: ({ focused, color }) => {
               let iconName;
               if (route.name === "Home") {
                 iconName = focused ? "home" : "home-outline";
-                return <Ionicons name={iconName} size={size} color={color} />;
+                return <Ionicons name={iconName} size={24} color={color} />;
               } else if (route.name === "Movies") {
                 iconName = focused ? "movie-open" : "movie-open-outline";
                 return (
                   <MaterialCommunityIcons
                     name={iconName}
-                    size={size}
+                    size={24}
                     color={color}
                   />
                 );
               } else if (route.name === "Tv Shows") {
                 iconName = focused ? "tv" : "tv-outline";
-                return <Ionicons name={iconName} size={size} color={color} />;
+                return <Ionicons name={iconName} size={24} color={color} />;
               } else if (route.name === "Search") {
                 iconName = focused ? "search" : "search";
-                return <Ionicons name={iconName} size={size} color={color} />;
+                return <Ionicons name={iconName} size={24} color={color} />;
               } else if (route.name === "Settings") {
                 iconName = focused ? "ios-settings" : "ios-settings-outline";
-                return <Ionicons name={iconName} size={size} color={color} />;
+                return <Ionicons name={iconName} size={24} color={color} />;
               }
             },
           })}
           tabBarOptions={{
             activeTintColor: "tomato",
             inactiveTintColor: "gray",
+            pressColor: 'gray',
+            labelStyle: {
+              fontSize: 11,
+              marginTop: 8,
+            },
+            style: {
+              borderTopWidth: 0.1,
+              backgroundColor: 'black',
+              paddingTop: 12,
+              paddingBottom: 6,
+            }
           }}
         >
           <Tab.Screen name="Home" component={HomeStackScreen} />

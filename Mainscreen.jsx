@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,50 +6,55 @@ import {
   ImageBackground,
   StyleSheet,
 } from "react-native";
-import * as Font from "expo-font";
-const fetchFonts = async () => {
-  return Font.loadAsync({
-    Netflix1: require("./assets/Fonts/Roboto-Regular.ttf"),
-    Netflix2: require("./assets/Fonts/Roboto-Light.ttf"),
-  });
-};
-fetchFonts();
-export default function Mainscreen(props) {
-  return (
-    <View style={styles.container}>
-      <ImageBackground
-        style={styles.image}
-        source={require("./assets/Login_large.jpg")}
-      >
-        <View style={styles.overlay} />
-        <View style={styles.textView}>
-          <Text style={styles.text}>Unlimited</Text>
-          <Text style={styles.text}>entertainment,</Text>
-          <Text style={styles.text}>one low price.</Text>
-          <Text
-            style={{
-              color: "white",
-              fontSize: 14,
-              fontFamily: "Netflix2",
-              letterSpacing: 0.5,
-              marginVertical: 20,
-            }}
-          >
-            All of DroidFlix, starting at just ₹ 199
-          </Text>
+import AppLoading from "expo-app-loading";
 
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => props.click(true)}
-            >
-              <Text style={styles.ButtonView}>Get Started</Text>
-            </TouchableOpacity>
-          </View>
+export default function Mainscreen(props) {
+  const [Load, setload] = useState(true);
+  setTimeout(() => {
+    setload(false);
+  }, 1000);
+  if (!Load) {
+    return (
+      <>
+        <View style={styles.container}>
+          <ImageBackground
+            style={styles.image}
+            source={require("./assets/Login_large.jpg")}
+          >
+            <View style={styles.overlay} />
+            <View style={styles.textView}>
+              <Text style={styles.text}>Unlimited</Text>
+              <Text style={styles.text}>entertainment,</Text>
+              <Text style={styles.text}>one low price.</Text>
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 14,
+                  letterSpacing: 0.5,
+                  marginTop: 20,
+                  marginBottom: 40,
+                  textAlign: "center",
+                }}
+              >
+                All of DroidFlix, starting at just ₹ 199
+              </Text>
+
+              <View style={{ justifyContent: "center", alignItems: "center" }}>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => props.click(true)}
+                >
+                  <Text style={styles.ButtonView}>Get Started </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </ImageBackground>
         </View>
-      </ImageBackground>
-    </View>
-  );
+      </>
+    );
+  } else {
+    return <AppLoading />;
+  }
 }
 
 const styles = StyleSheet.create({
@@ -64,27 +69,28 @@ const styles = StyleSheet.create({
   textView: {
     top: "20%",
     textAlign: "center",
-    marginTop: 200,
+    marginTop: 300,
   },
   text: {
     color: "white",
     fontSize: 40,
-    fontFamily: "Netflix1",
     letterSpacing: 1,
+    textAlign: "center",
   },
   ButtonView: {
     color: "white",
     fontSize: 20,
-    fontFamily: "Netflix2",
     letterSpacing: 1,
+    textAlign: "center",
   },
   button: {
     color: "red",
     backgroundColor: "red",
-    width: "90%",
+    width: 300,
     height: 40,
     justifyContent: "center",
     alignItems: "center",
+    borderRadius: 10,
   },
   overlay: {
     position: "absolute",
