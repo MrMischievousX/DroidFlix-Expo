@@ -1,11 +1,10 @@
 import React from "react";
 import { View, Text } from "react-native";
 
-export default function HomeBanner() {
+export default function CastandCrew() {
   return (
     <View>
-      <Text></Text>
+      <Text>Cast and Crew</Text>
     </View>
   );
 }
-// {genre[2].name || null}

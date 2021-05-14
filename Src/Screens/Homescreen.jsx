@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   ScrollView,
@@ -8,12 +8,12 @@ import {
   Image,
   Text,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
 import Card from "../Components/Card";
 import axios from "../Components/axios";
 import request from "../Components/request";
-import AppLoading from "expo-app-loading";
 import { LinearGradient } from "expo-linear-gradient";
 
 export default function Homescreen({ navigation }) {
@@ -25,18 +25,21 @@ export default function Homescreen({ navigation }) {
     const res = await axios.get(
       request.fetchNetflixOriginals + Math.floor(Math.random() * 1) + 1
     );
-    // console.log(
-    //   await axios.get(
-    //     "/movie/upcoming?api_key=e057c1c54b5e1bad35cdc1d8d3152acf&language=en-US&page=1"
-    //   )
-    // );
     setdata(
       res.data.results[Math.floor(Math.random() * res.data.results.length)]
     );
   }
+
   let image = {
     uri: `https://image.tmdb.org/t/p/original/${data.backdrop_path}`,
   };
+  useEffect(() => {
+    getData();
+  }, []);
+  setTimeout(() => {
+    setload(true);
+  }, 1000);
+
   if (Load && data.backdrop_path) {
     return (
       <>
@@ -53,7 +56,7 @@ export default function Homescreen({ navigation }) {
             onPress={() => setmode(!Dark)}
           />
         </View>
-        <ScrollView style={{ backgroundColor: Dark ? "black" : "white" }}>
+        <ScrollView style={{ backgroundColor: Dark ? "black" : "#F4F4F4" }}>
           <View style={Dark ? styles.Banner : Light.Banner}>
             <ImageBackground
               style={Dark ? styles.image : Light.image}
@@ -74,7 +77,6 @@ export default function Homescreen({ navigation }) {
                 }
                 style={Dark ? styles.overlaytop : Light.overlaytop}
               />
-
               <View style={Dark ? styles.plus : Light.plus}>
                 <Text style={Dark ? styles.plusTitle : Light.plusTitle}>
                   {data.original_name}
@@ -85,7 +87,6 @@ export default function Homescreen({ navigation }) {
                     navigation.navigate("CardDetail", {
                       data: data,
                     });
-                    console.log("press");
                   }}
                 >
                   <AntDesign name="play" size={18} color={"black"} />
@@ -271,15 +272,16 @@ export default function Homescreen({ navigation }) {
     );
   } else {
     return (
-      <AppLoading
-        startAsync={getData}
-        onFinish={() => setload(true)}
-        onError={console.warn}
+      <ActivityIndicator
+        size="large"
+        color="#0000ff"
+        style={{ flex: 1, alignSelf: "center" }}
       />
     );
   }
 }
 
+//Styles
 const styles = StyleSheet.create({
   header: {
     paddingTop: 5,
@@ -291,7 +293,7 @@ const styles = StyleSheet.create({
   Banner: {
     width: "100%",
     height: 320,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   mode: {
     color: "white",
@@ -333,7 +335,7 @@ const styles = StyleSheet.create({
   },
   plusText: {
     color: "white",
-    fontSize: 14,
+    fontSize: 16,
     marginTop: 5,
     lineHeight: 20,
   },
@@ -364,7 +366,7 @@ const Light = StyleSheet.create({
   Banner: {
     width: "100%",
     height: 320,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   mode: {
     color: "black",
@@ -402,6 +404,7 @@ const Light = StyleSheet.create({
   },
   plusText: {
     color: "white",
+    marginTop: 5,
     fontSize: 16,
     lineHeight: 20,
   },

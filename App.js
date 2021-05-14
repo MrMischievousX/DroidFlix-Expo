@@ -107,7 +107,7 @@ export default function App() {
             },
           })}
           tabBarOptions={{
-            activeTintColor: "tomato",
+            activeTintColor: "#DC3653",
             inactiveTintColor: "gray",
             pressColor: 'gray',
             labelStyle: {
@@ -115,10 +115,10 @@ export default function App() {
               marginTop: 8,
             },
             style: {
+              bottom: 0,
               borderTopWidth: 0.1,
               backgroundColor: 'black',
               paddingTop: 12,
-              paddingBottom: 6,
             }
           }}
         >

@@ -7,12 +7,20 @@ import {
   StyleSheet,
 } from "react-native";
 import AppLoading from "expo-app-loading";
+import { Dimensions } from "react-native";
+
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
+
+console.log(windowHeight, windowWidth);
 
 export default function Mainscreen(props) {
   const [Load, setload] = useState(true);
+
   setTimeout(() => {
     setload(false);
   }, 1000);
+
   if (!Load) {
     return (
       <>
@@ -38,7 +46,6 @@ export default function Mainscreen(props) {
               >
                 All of DroidFlix, starting at just ₹ 199
               </Text>
-
               <View style={{ justifyContent: "center", alignItems: "center" }}>
                 <TouchableOpacity
                   style={styles.button}
@@ -67,9 +74,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textView: {
-    top: "20%",
     textAlign: "center",
-    marginTop: 300,
+    marginTop: windowHeight / 1.7,
   },
   text: {
     color: "white",
@@ -84,10 +90,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   button: {
-    color: "red",
-    backgroundColor: "red",
-    width: 300,
+    color: "#DC3653",
+    backgroundColor: "#DC3653",
+    width: windowWidth / 1.2,
     height: 40,
+    maxWidth: 500,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
@@ -99,6 +106,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     backgroundColor: "black",
-    opacity: 0.5,
+    opacity: 0.3,
   },
 });
