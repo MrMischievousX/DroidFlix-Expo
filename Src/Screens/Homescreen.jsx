@@ -17,10 +17,12 @@ import request from "../Components/request";
 import { LinearGradient } from "expo-linear-gradient";
 
 export default function Homescreen({ navigation }) {
+  //States
   const [data, setdata] = useState([]);
   const [Load, setload] = useState(false);
   const [Dark, setmode] = useState(true);
 
+  //Functions
   async function getData() {
     const res = await axios.get(
       request.fetchNetflixOriginals + Math.floor(Math.random() * 1) + 1
@@ -30,9 +32,12 @@ export default function Homescreen({ navigation }) {
     );
   }
 
-  let image = {
+  //Constants
+  const image = {
     uri: `https://image.tmdb.org/t/p/original/${data.backdrop_path}`,
   };
+
+  //OnMount
   useEffect(() => {
     getData();
   }, []);
@@ -40,6 +45,9 @@ export default function Homescreen({ navigation }) {
     setload(true);
   }, 1000);
 
+  //Console Logs
+
+  //Main Function
   if (Load && data.backdrop_path) {
     return (
       <>

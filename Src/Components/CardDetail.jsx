@@ -8,12 +8,13 @@ import {
   ScrollView,
   ImageBackground,
   ActivityIndicator,
+  Dimensions,
+  FlatList,
 } from "react-native";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import axios from "../Components/axios";
-import { Dimensions } from "react-native";
 import * as Font from "expo-font";
-import CastandCrew from "./CastandCrew";
+import Cast from "./Cast";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -46,11 +47,12 @@ export default function CardDetail({ route }) {
   const Language = data.original_language;
   const id = data.id;
   const image = {
-    uri: `${url1}${data.backdrop_path}`,
+    uri: `${url1}${data.backdrop_path || data.poster_path}`,
   };
   const PosterImage = {
     uri: `${url2}${data.poster_path}`,
   };
+
   //Functions
   const GetAll = async () => {
     try {
@@ -60,8 +62,6 @@ export default function CardDetail({ route }) {
           if (movie1.data.genres.length > 1) {
             setgenre(movie1.data.genres);
             setruntime(movie1.data.runtime);
-            // console.log(movie1);
-          } else {
           }
           setrate(data.vote_average);
           setyear(
@@ -72,16 +72,12 @@ export default function CardDetail({ route }) {
           setTimeout(() => {
             setload(true);
           }, 500);
-          console.log(data);
         });
     } catch (err) {
-      // console.log(err);
+      setload(true);
+      // console.warn(err);
     }
-    // console.log(
-    //   await axios.get(
-    //     `/movie/${id}/credits?api_key=e057c1c54b5e1bad35cdc1d8d3152acf`
-    //   )
-    // );
+
     // console.log(
     //   await axios.get(
     //     `/movie/${id}/images?api_key=e057c1c54b5e1bad35cdc1d8d3152acf`
@@ -89,11 +85,16 @@ export default function CardDetail({ route }) {
     // );
   };
 
+  //On Mount
   useEffect(() => {
     fetchFonts();
     GetAll();
+    console.log(data.poster_path);
   }, []);
 
+  //Consoles
+
+  //Main Function
   if (Load) {
     return (
       <ScrollView style={{ backgroundColor: "white" }}>
@@ -104,7 +105,6 @@ export default function CardDetail({ route }) {
               style={styles.image}
             ></ImageBackground>
           </View>
-
           <View style={styles.posterContain}>
             <Image
               source={PosterImage}
@@ -114,15 +114,13 @@ export default function CardDetail({ route }) {
               }}
             />
           </View>
-
           <AntDesign
             name="play"
             size={40}
-            color="#DC3653"
+            color="red"
             style={styles.playButton}
-            onPress={() => console.log(pressed)}
+            onPress={() => console.log("pressed")}
           />
-
           <View style={styles.detailContainer}>
             <Text style={styles.movieTitle}>
               {data?.name ||
@@ -140,7 +138,7 @@ export default function CardDetail({ route }) {
                   rate > 1 ? "star" : rate === 0 ? "star-o" : "star-half-full"
                 }
                 size={28}
-                color="#DC3653"
+                color="red"
               />
               <FontAwesome
                 style={{ marginRight: 5 }}
@@ -152,7 +150,7 @@ export default function CardDetail({ route }) {
                     : "star-half-full"
                 }
                 size={28}
-                color="#DC3653"
+                color="red"
               />
               <FontAwesome
                 style={{ marginRight: 5 }}
@@ -164,7 +162,7 @@ export default function CardDetail({ route }) {
                     : "star-half-full"
                 }
                 size={28}
-                color="#DC3653"
+                color="red"
               />
               <FontAwesome
                 style={{ marginRight: 5 }}
@@ -176,7 +174,7 @@ export default function CardDetail({ route }) {
                     : "star-half-full"
                 }
                 size={28}
-                color="#DC3653"
+                color="red"
               />
               <FontAwesome
                 style={{ marginRight: 5 }}
@@ -188,7 +186,7 @@ export default function CardDetail({ route }) {
                     : "star-half-full"
                 }
                 size={28}
-                color="#DC3653"
+                color="red"
               />
             </View>
             <View style={{ flexDirection: "row", marginTop: 10 }}>
@@ -214,7 +212,8 @@ export default function CardDetail({ route }) {
             </View>
             <Text style={styles.overview}>{data.overview}</Text>
           </View>
-          <CastandCrew />
+
+          <Cast id={id} defaultSrc={data.poster_path} />
         </View>
       </ScrollView>
     );

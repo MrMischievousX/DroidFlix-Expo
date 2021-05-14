@@ -12,8 +12,6 @@ import { Dimensions } from "react-native";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-console.log(windowHeight, windowWidth);
-
 export default function Mainscreen(props) {
   const [Load, setload] = useState(true);
 
@@ -90,8 +88,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   button: {
-    color: "#DC3653",
-    backgroundColor: "#DC3653",
+    color: "red",
+    backgroundColor: "red",
     width: windowWidth / 1.2,
     height: 40,
     maxWidth: 500,

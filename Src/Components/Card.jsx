@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import axios from "./axios";
-import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
 
 const fetchFonts = async () => {
@@ -23,17 +22,17 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
   const url = "https://image.tmdb.org/t/p/w200";
 
   async function getData() {
-    let res = await axios.get(fetchUrl + 2);
+    let res = await axios.get(fetchUrl + 1);
     let arr = res.data.results;
-    res = await axios.get(fetchUrl + 3);
+    res = await axios.get(fetchUrl + 2);
     arr = arr.concat(res.data.results);
-    res = await axios.get(fetchUrl + 1);
+    res = await axios.get(fetchUrl + 3);
     arr = arr.concat(res.data.results);
     res = await axios.get(fetchUrl + 4);
     arr = arr.concat(res.data.results);
-    res = await axios.get(fetchUrl + 6);
-    arr = arr.concat(res.data.results);
     res = await axios.get(fetchUrl + 5);
+    arr = arr.concat(res.data.results);
+    res = await axios.get(fetchUrl + 6);
     arr = arr.concat(res.data.results);
     setmovies(arr);
     setload(true);
@@ -52,7 +51,7 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
           horizontal
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item) => item.id.toString()}
-          data={movies.slice(0, 4)}
+          data={movies.slice(0, 5)}
           renderItem={({ item }) => {
             const image = {
               uri: `${url}${
