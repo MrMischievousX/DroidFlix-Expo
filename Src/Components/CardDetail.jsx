@@ -9,18 +9,19 @@ import {
   ImageBackground,
   ActivityIndicator,
   Dimensions,
-  FlatList,
 } from "react-native";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import axios from "../Components/axios";
 import * as Font from "expo-font";
 import Cast from "./Cast";
-
+import api from "../../api";
+//Constants
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 const url1 = "https://image.tmdb.org/t/p/original";
 const url2 = "https://image.tmdb.org/t/p/w500";
 
+//Functions
 const fetchFonts = async () => {
   return Font.loadAsync({
     Bebas: require("../../assets/Fonts/Bebas.ttf"),
@@ -56,23 +57,21 @@ export default function CardDetail({ route }) {
   //Functions
   const GetAll = async () => {
     try {
-      await axios
-        .get(`/movie/${id}?api_key=e057c1c54b5e1bad35cdc1d8d3152acf`)
-        .then((movie1) => {
-          if (movie1.data.genres.length > 1) {
-            setgenre(movie1.data.genres);
-            setruntime(movie1.data.runtime);
-          }
-          setrate(data.vote_average);
-          setyear(
-            data.first_air_date
-              ? data.first_air_date.slice(0, 4)
-              : data.release_date.slice(0, 4)
-          );
-          setTimeout(() => {
-            setload(true);
-          }, 500);
-        });
+      await axios.get(`/movie/${id}?api_key=${api}`).then((movie1) => {
+        if (movie1.data.genres.length > 1) {
+          setgenre(movie1.data.genres);
+          setruntime(movie1.data.runtime);
+        }
+        setrate(data.vote_average);
+        setyear(
+          data.first_air_date
+            ? data.first_air_date.slice(0, 4)
+            : data.release_date.slice(0, 4)
+        );
+        setTimeout(() => {
+          setload(true);
+        }, 500);
+      });
     } catch (err) {
       setload(true);
       // console.warn(err);
@@ -89,7 +88,6 @@ export default function CardDetail({ route }) {
   useEffect(() => {
     fetchFonts();
     GetAll();
-    console.log(data.poster_path);
   }, []);
 
   //Consoles
@@ -284,6 +282,7 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 1000,
     overflow: "hidden",
     elevation: 29,
+    backgroundColor: "white",
   },
   posterContain: {
     overflow: "hidden",
@@ -295,6 +294,7 @@ const styles = StyleSheet.create({
     borderColor: "white",
     borderRadius: 30,
     elevation: 30,
+    backgroundColor: "white",
   },
   detailContainer: {
     marginTop: 30,

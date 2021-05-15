@@ -1,5 +1,5 @@
+//Imports
 import * as React from "react";
-import { ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -11,6 +11,8 @@ import Homescreen from "./Src/Screens/Homescreen";
 import CardDetail from "./Src/Components/CardDetail";
 import { MaterialCommunityIcons, Ionicons } from "react-native-vector-icons";
 import Mainscreen from "./Mainscreen"
+
+//Homestack
 const HomeStack = createStackNavigator();
 function HomeStackScreen() {
   return (
@@ -25,6 +27,7 @@ function HomeStackScreen() {
   );
 }
 
+//Searchstack
 const SearchStack = createStackNavigator();
 function SearchStackScreen() {
   return (
@@ -38,6 +41,7 @@ function SearchStackScreen() {
   );
 }
 
+//Moviestack
 const MovieStack = createStackNavigator();
 function MovieStackScreen() {
   return (
@@ -51,6 +55,7 @@ function MovieStackScreen() {
   );
 }
 
+//Tvstack
 const TvStack = createStackNavigator();
 function TvShowStackScreen() {
   return (
@@ -64,12 +69,12 @@ function TvShowStackScreen() {
   );
 }
 
+//Tabnavigator
 const Tab = createBottomTabNavigator();
-
 export default function App() {
   const [Load, setLoad] = React.useState(false)
 
-  if (!Load) {
+  if (Load) {
     return (
       <>
         <Mainscreen click={setLoad} />

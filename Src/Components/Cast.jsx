@@ -1,3 +1,4 @@
+//Imports
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -8,28 +9,32 @@ import {
   ActivityIndicator,
 } from "react-native";
 import axios from "../Components/axios";
-
+import api from "../../api";
 //Constants
+const url1 = "https://image.tmdb.org/t/p/w300";
 
 export default function Cast({ id, defaultSrc }) {
-  //Constants
+  //States
   const [cast, setcast] = useState([]);
   const [Load, setLoad] = useState(false);
-  const url1 = "https://image.tmdb.org/t/p/original";
+
+  //Consants
   const castDefault = [
     { id: 1, profile_path: defaultSrc },
     { id: 2, profile_path: defaultSrc },
     { id: 3, profile_path: defaultSrc },
-    { id: 4, profile_path: defaultSrc },
   ];
 
   //Functions
   const castFnc = async () => {
     await axios
-      .get(`/movie/${id}/credits?api_key=e057c1c54b5e1bad35cdc1d8d3152acf`)
+      .get(`/movie/${id}/credits?api_key=${api}`)
       .then((data) => {
-        if (data.length == 0) setcast(castDefault);
-        else setcast(data.data.cast);
+        setcast([...data.data.cast, ...castDefault]);
+        setLoad(true);
+      })
+      .catch((err) => {
+        setcast(castDefault);
         setLoad(true);
       });
   };
@@ -40,7 +45,8 @@ export default function Cast({ id, defaultSrc }) {
   }, []);
 
   //Consoles
-  console.log(cast);
+  // console.log(cast);
+
   //Main Function
   if (Load) {
     return (
@@ -58,7 +64,13 @@ export default function Cast({ id, defaultSrc }) {
               };
               if (item.profile_path == null) return null;
               else {
-                return <Image source={image} style={styles.cast} />;
+                return (
+                  <Image
+                    source={image}
+                    style={styles.cast}
+                    style={{ border }}
+                  />
+                );
               }
             }}
           />
@@ -77,20 +89,24 @@ export default function Cast({ id, defaultSrc }) {
 }
 const styles = StyleSheet.create({
   cast: {
-    width: 60,
-    height: 60,
-    borderRadius: 50,
+    width: 80,
+    height: 80,
+    borderRadius: 100,
     marginLeft: 10,
     resizeMode: "cover",
   },
   castText: {
     marginHorizontal: 10,
     marginBottom: 5,
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
   },
   view: {
     alignSelf: "flex-start",
     marginVertical: 20,
+  },
+  image: {
+    borderWidth: 1,
+    borderColor: "black",
   },
 });

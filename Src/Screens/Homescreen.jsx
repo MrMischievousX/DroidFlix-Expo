@@ -1,3 +1,4 @@
+//Imports
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -87,7 +88,10 @@ export default function Homescreen({ navigation }) {
               />
               <View style={Dark ? styles.plus : Light.plus}>
                 <Text style={Dark ? styles.plusTitle : Light.plusTitle}>
-                  {data.original_name}
+                  {data?.name ||
+                    data?.title ||
+                    data?.titlename ||
+                    data?.original_name}
                 </Text>
                 <Pressable
                   style={Dark ? styles.play : Light.play}
@@ -302,6 +306,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 320,
     marginBottom: 10,
+    backgroundColor: "black",
   },
   mode: {
     color: "white",
@@ -375,6 +380,7 @@ const Light = StyleSheet.create({
     width: "100%",
     height: 320,
     marginBottom: 10,
+    backgroundColor: "white",
   },
   mode: {
     color: "black",

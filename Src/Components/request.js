@@ -1,4 +1,4 @@
-const api = "e057c1c54b5e1bad35cdc1d8d3152acf";
+import api from "../../api"
 
 const requests = {
     fetchActionMovies: `/discover/movie?api_key=${api}&with_genres=28&page=`,

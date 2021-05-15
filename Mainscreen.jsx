@@ -1,3 +1,4 @@
+//Imports
 import React, { useState } from "react";
 import {
   View,
@@ -9,16 +10,19 @@ import {
 import AppLoading from "expo-app-loading";
 import { Dimensions } from "react-native";
 
+//Constants
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 export default function Mainscreen(props) {
+  //States
   const [Load, setload] = useState(true);
 
   setTimeout(() => {
     setload(false);
   }, 1000);
 
+  //Main Function
   if (!Load) {
     return (
       <>
@@ -62,6 +66,7 @@ export default function Mainscreen(props) {
   }
 }
 
+//Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -73,7 +78,8 @@ const styles = StyleSheet.create({
   },
   textView: {
     textAlign: "center",
-    marginTop: windowHeight / 1.7,
+    marginTop: windowHeight / 1.8,
+    marginBottom: windowHeight / 8,
   },
   text: {
     color: "white",
