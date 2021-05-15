@@ -9,6 +9,7 @@ import Settings from "./Src/Screens/Settings";
 import TvShows from "./Src/Screens/TvShows";
 import Homescreen from "./Src/Screens/Homescreen";
 import CardDetail from "./Src/Components/CardDetail";
+import CardMoreDetail from "./Src/Components/CardMoreDetail";
 import { MaterialCommunityIcons, Ionicons } from "react-native-vector-icons";
 import Mainscreen from "./Mainscreen"
 
@@ -23,6 +24,7 @@ function HomeStackScreen() {
     >
       <HomeStack.Screen name="Home" component={Homescreen} />
       <HomeStack.Screen name="CardDetail" component={CardDetail} />
+      <HomeStack.Screen name="CardMoreDetail" component={CardMoreDetail} />
     </HomeStack.Navigator>
   );
 }

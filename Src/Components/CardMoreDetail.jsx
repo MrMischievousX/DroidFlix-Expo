@@ -95,10 +95,8 @@ export default function CardDetail({ route, navigation }) {
   useEffect(() => {
     fetchFonts();
     GetAll();
-  }, []);
-  useEffect(() => {
     onPressTouch();
-  }, [data]);
+  }, []);
 
   //Consoles
 
@@ -230,7 +228,7 @@ export default function CardDetail({ route, navigation }) {
           {/* Screenshots */}
           <ScreenShots id={id} />
           {/* Screenshots */}
-          <Suggestions id={id} navigation={navigation} screen={false} />
+          <Suggestions id={id} navigation={navigation} screen={true} />
 
           {/*  */}
         </View>

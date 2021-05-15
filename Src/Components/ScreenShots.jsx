@@ -1,5 +1,5 @@
 //Imports
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -19,7 +19,8 @@ export default function Cast({ id, defaultSrc }) {
   const [Screen, setScreen] = useState([]);
   const [Load, setLoad] = useState(false);
 
-  //Consants
+  //Hooks
+  const flatListRef = useRef();
 
   //Functions
   const castFnc = async () => {
@@ -33,11 +34,15 @@ export default function Cast({ id, defaultSrc }) {
         setLoad(true);
       });
   };
+  const toStart = () => {
+    flatListRef.current?.scrollToIndex({ animated: true, index: 0 });
+  };
 
   //On Mount
   useEffect(() => {
     castFnc();
-  }, []);
+    toStart();
+  }, [id]);
 
   //Consoles
   // console.log(cast);
@@ -49,6 +54,7 @@ export default function Cast({ id, defaultSrc }) {
         <Text style={styles.castText}> ScreenShots </Text>
         <View style={{ flexDirection: "row" }}>
           <FlatList
+            ref={flatListRef}
             horizontal
             showsHorizontalScrollIndicator={false}
             keyExtractor={(item, index) => index.toString()}
@@ -86,7 +92,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 20,
     resizeMode: "cover",
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: "black",
   },
   castText: {

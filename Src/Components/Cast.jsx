@@ -43,7 +43,7 @@ export default function Cast({ id, defaultSrc }) {
   //On Mount
   useEffect(() => {
     castFnc();
-  }, []);
+  }, [id]);
 
   //Consoles
   // console.log(cast);

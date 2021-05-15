@@ -7,16 +7,17 @@ import {
   Image,
   StyleSheet,
   ActivityIndicator,
+  Pressable,
 } from "react-native";
 import axios from "../Components/axios";
 import api from "../../api";
 
 //Constants
-const url1 = "https://image.tmdb.org/t/p/w300";
+const url = "https://image.tmdb.org/t/p/w200";
 
-export default function Cast({ id, defaultSrc }) {
+export default function Cast({ id, navigation, screen }) {
   //States
-  const [Screen, setScreen] = useState([]);
+  const [recommend, setrecommend] = useState([]);
   const [Load, setLoad] = useState(false);
 
   //Hooks
@@ -25,9 +26,9 @@ export default function Cast({ id, defaultSrc }) {
   //Functions
   const castFnc = async () => {
     await axios
-      .get(`/movie/${id}/images?api_key=${api}`)
+      .get(`/movie/${id}/recommendations?api_key=${api}`)
       .then((data) => {
-        setScreen(data.data.posters);
+        setrecommend(data.data.results);
         setLoad(true);
       })
       .catch((err) => {
@@ -51,25 +52,29 @@ export default function Cast({ id, defaultSrc }) {
   if (Load) {
     return (
       <View style={styles.view}>
-        <Text style={styles.castText}> Posters </Text>
-        <View style={{ flexDirection: "row" }}>
-          <FlatList
-            ref={flatListRef}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            keyExtractor={(item, index) => index.toString()}
-            data={Screen.slice(0, 10)}
-            renderItem={({ item }) => {
-              const image = {
-                uri: `${url1}${item.file_path}`,
-              };
-              if (item.file_path == null) return null;
-              else {
-                return <Image source={image} style={styles.cast} />;
-              }
-            }}
-          />
-        </View>
+        <Text style={styles.castText}> Similar Movies </Text>
+        <FlatList
+          ref={flatListRef}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(item, index) => index.toString()}
+          data={recommend.slice(0, 5)}
+          renderItem={({ item }) => {
+            const image = {
+              uri: `${url}${item.backdrop_path || item.poster_path}`,
+            };
+            return (
+              <Pressable
+                onPress={() => {
+                  navigation.navigate("CardDetail", { data: item });
+                }}
+                style={styles.viewStyle}
+              >
+                <Image source={image} style={styles.imageStyle} />
+              </Pressable>
+            );
+          }}
+        />
       </View>
     );
   } else {
@@ -85,15 +90,15 @@ export default function Cast({ id, defaultSrc }) {
 
 //Styles
 const styles = StyleSheet.create({
-  cast: {
-    height: 180,
-    width: 120,
+  viewStyle: {
+    overflow: "hidden",
+    height: 120,
+    width: 200,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "white",
     marginHorizontal: 5,
     marginBottom: 10,
-    borderRadius: 20,
-    resizeMode: "cover",
-    borderWidth: 1,
-    borderColor: "black",
   },
   castText: {
     marginHorizontal: 10,
@@ -104,5 +109,10 @@ const styles = StyleSheet.create({
   view: {
     alignSelf: "flex-start",
     marginTop: 10,
+    flex: 1,
+  },
+  imageStyle: {
+    flex: 1,
+    resizeMode: "cover",
   },
 });
