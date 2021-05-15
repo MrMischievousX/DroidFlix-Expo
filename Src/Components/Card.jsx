@@ -51,7 +51,7 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
           horizontal
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item) => item.id.toString()}
-          data={movies.slice(0, 5)}
+          data={movies}
           renderItem={({ item }) => {
             const image = {
               uri: `${url}${
