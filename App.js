@@ -74,7 +74,7 @@ const Tab = createBottomTabNavigator();
 export default function App() {
   const [Load, setLoad] = React.useState(false)
 
-  if (Load) {
+  if (!Load) {
     return (
       <>
         <Mainscreen click={setLoad} />
