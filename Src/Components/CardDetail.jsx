@@ -14,7 +14,10 @@ import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import axios from "../Components/axios";
 import * as Font from "expo-font";
 import Cast from "./Cast";
+import ScreenShots from "./ScreenShots";
+import Posters from "./Posters";
 import api from "../../api";
+
 //Constants
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -211,7 +214,16 @@ export default function CardDetail({ route }) {
             <Text style={styles.overview}>{data.overview}</Text>
           </View>
 
+          {/* Cast */}
           <Cast id={id} defaultSrc={data.poster_path} />
+
+          {/* Posters */}
+          <Posters id={id} />
+
+          {/* Screenshots */}
+          <ScreenShots id={id} />
+
+          {/*  */}
         </View>
       </ScrollView>
     );
@@ -267,7 +279,6 @@ const styles = StyleSheet.create({
   },
   viewStyle: {
     alignItems: "center",
-    flex: 1,
   },
   image: {
     width: windowWidth,
