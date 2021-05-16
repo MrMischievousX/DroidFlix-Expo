@@ -63,14 +63,18 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
       <>
         <Text style={mode ? styles.textStyle : Light.textStyle}>{title}</Text>
         <FlatList
-          ref={flatListRef}
           horizontal
+          ref={flatListRef}
           showsHorizontalScrollIndicator={false}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item) => item.id.toString()}
           data={movies}
           renderItem={({ item }) => {
             const image = {
-              uri: `${url}${thumb ? item.poster_path : item.backdrop_path}`,
+              uri: `${url}${
+                thumb
+                  ? item.poster_path
+                  : item.backdrop_path || item.poster_path
+              }`,
             };
             if (!(item.backdrop_path && item.poster_path)) return null;
             else
@@ -151,14 +155,21 @@ const Light = StyleSheet.create({
   viewStyleThumb: {
     height: 180,
     width: 120,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "black",
     marginHorizontal: 5,
     marginBottom: 10,
+    overflow: "hidden",
   },
 
   viewStyle: {
     overflow: "hidden",
     height: 120,
     width: 200,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "black",
     marginHorizontal: 5,
     marginBottom: 10,
   },
@@ -171,9 +182,6 @@ const Light = StyleSheet.create({
     letterSpacing: 1,
   },
   imageStyle: {
-    borderRadius: 20,
-    borderWidth: 1.5,
-    borderColor: "black",
     flex: 1,
     resizeMode: "cover",
   },

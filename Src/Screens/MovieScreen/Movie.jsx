@@ -12,12 +12,12 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
-import Card from "../Components/Card";
-import axios from "../Components/axios";
-import request from "../Components/request";
+import MovieCard from "../../Components/MovieCard";
+import axios from "../../Components/axios";
+import request from "../../Components/request";
 import { LinearGradient } from "expo-linear-gradient";
 
-export default function Homescreen({ navigation }) {
+export default function Homescreen({ navigation, current }) {
   //States
   const [data, setdata] = useState([]);
   const [Load, setload] = useState(false);
@@ -42,6 +42,9 @@ export default function Homescreen({ navigation }) {
   useEffect(() => {
     getData();
   }, []);
+  useEffect(() => {
+    setmode(current);
+  }, [current]);
   setTimeout(() => {
     setload(true);
   }, 1000);
@@ -53,18 +56,6 @@ export default function Homescreen({ navigation }) {
     return (
       <>
         <StatusBar />
-        <View style={Dark ? styles.header : Light.header}>
-          <Image
-            style={{ width: 100, height: 30, marginLeft: 20 }}
-            source={require("../../assets/Logo.png")}
-          />
-          <MaterialCommunityIcons
-            size={28}
-            name="theme-light-dark"
-            style={Dark ? styles.mode : Light.mode}
-            onPress={() => setmode(!Dark)}
-          />
-        </View>
         <ScrollView style={{ backgroundColor: Dark ? "black" : "#F4F4F4" }}>
           <View style={Dark ? styles.Banner : Light.Banner}>
             <ImageBackground
@@ -132,151 +123,116 @@ export default function Homescreen({ navigation }) {
               />
             </ImageBackground>
           </View>
-          <Card
-            thumb={true}
-            mode={Dark}
-            title="Droidflix Originals"
-            fetchUrl={request.fetchNetflixOriginals}
-            navigation={navigation}
-          />
-          <Card
-            thumb={false}
-            mode={Dark}
-            title="Top Trending"
-            fetchUrl={request.fetchTrending}
-            navigation={navigation}
-          />
-          <Card
-            thumb={false}
-            mode={Dark}
-            title="Top Rated"
-            fetchUrl={request.fetchTopRated}
-            navigation={navigation}
-          />
-          <Card
+          <MovieCard
             thumb={false}
             mode={Dark}
             title="Action Movies"
             fetchUrl={request.fetchActionMovies}
             navigation={navigation}
           />
-          <Card
-            thumb={false}
-            mode={Dark}
-            title="Adventure Movies"
-            fetchUrl={request.fetchAdventureMovies}
-            navigation={navigation}
-          />
-          <Card
-            thumb={false}
-            mode={Dark}
-            title="Upcoming Movies"
-            fetchUrl={request.fetchUpcoming}
-            navigation={navigation}
-          />
-          <Card
+          <MovieCard
             thumb={false}
             mode={Dark}
             title="Horror Movies"
             fetchUrl={request.fetchHorrorMovies}
             navigation={navigation}
           />
-          <Card
+          <MovieCard
+            thumb={false}
+            mode={Dark}
+            title="Adventure Movies"
+            fetchUrl={request.fetchAdventureMovies}
+            navigation={navigation}
+          />
+          <MovieCard
             thumb={false}
             mode={Dark}
             title="Romantic Movies"
             fetchUrl={request.fetchRomanceMovies}
             navigation={navigation}
           />
-          <Card
+          <MovieCard
             thumb={false}
             mode={Dark}
             title="Thriller Movies"
             fetchUrl={request.fetchTrillerMovies}
             navigation={navigation}
           />
-          <Card
+          <MovieCard
             thumb={false}
             mode={Dark}
             title="Fantasy Movies"
             fetchUrl={request.fetchFantasyMovies}
             navigation={navigation}
           />
-          <Card
+          <MovieCard
             thumb={false}
             mode={Dark}
             title="Comedy Movies"
             fetchUrl={request.fetchComedyMovies}
             navigation={navigation}
           />
-          <Card
+          <MovieCard
             thumb={false}
             mode={Dark}
             title="Science Fiction Movies"
             fetchUrl={request.fetchScienceFiction}
             navigation={navigation}
           />
-          <Card
+          <MovieCard
             thumb={false}
             mode={Dark}
             title="Mystery Movies"
             fetchUrl={request.fetchMysteryMovie}
             navigation={navigation}
           />
-          <Card
+          <MovieCard
             thumb={false}
             mode={Dark}
             title="Animation Movies"
             fetchUrl={request.fetchAnimationMovies}
             navigation={navigation}
           />
-          <Card
+          <MovieCard
             thumb={false}
             mode={Dark}
             title="Crime Movies"
             fetchUrl={request.fetchCrimeMovies}
             navigation={navigation}
           />
-          <Card
+          <MovieCard
             thumb={false}
             mode={Dark}
             title="Drama Movies"
             fetchUrl={request.fetchDrameMovies}
             navigation={navigation}
           />
-          <Card
+          <MovieCard
             thumb={false}
             mode={Dark}
             title="War Movies"
             fetchUrl={request.fetchWarMovies}
             navigation={navigation}
           />
-          <Card
+          <MovieCard
             thumb={false}
             mode={Dark}
             title="Western Movies"
             fetchUrl={request.fetchWesternMovies}
             navigation={navigation}
           />
-          <Card
+          <MovieCard
             thumb={false}
             mode={Dark}
             title="Family Movies"
             fetchUrl={request.fetchFamilyMovies}
             navigation={navigation}
           />
-          <Card
+          <MovieCard
             thumb={false}
             mode={Dark}
             title="History Movies"
             fetchUrl={request.fetchHistory}
-            navigation={navigation}
-          />
-          <Card
-            thumb={false}
-            mode={Dark}
-            title="Documentaries"
-            fetchUrl={request.fetchDocumentaries}
             navigation={navigation}
           />
         </ScrollView>
@@ -295,23 +251,11 @@ export default function Homescreen({ navigation }) {
 
 //Styles
 const styles = StyleSheet.create({
-  header: {
-    paddingTop: 5,
-    backgroundColor: "black",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexDirection: "row",
-  },
   Banner: {
     width: "100%",
     height: 320,
     marginBottom: 10,
     backgroundColor: "black",
-  },
-  mode: {
-    color: "white",
-    marginVertical: 5,
-    marginRight: 15,
   },
   image: {
     flex: 1,

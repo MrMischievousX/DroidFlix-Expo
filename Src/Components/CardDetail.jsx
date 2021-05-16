@@ -10,12 +10,13 @@ import {
   ActivityIndicator,
   Dimensions,
 } from "react-native";
-import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
 import axios from "../Components/axios";
 import * as Font from "expo-font";
 import Cast from "./Cast";
 import ScreenShots from "./ScreenShots";
 import Suggestions from "./Suggestions";
+import Similar from "./Similar";
 import Posters from "./Posters";
 import api from "../../api";
 
@@ -46,12 +47,13 @@ export default function CardDetail({ route, navigation }) {
   const [rate, setrate] = useState(8);
   const [runtime, setruntime] = useState(120);
   const [year, setyear] = useState(2012);
+  const [same, setsame] = useState(true);
 
   //Hooks
   const scrollRef = useRef();
 
   //Constants
-  const { data } = route.params;
+  const { data, which } = route.params;
   const Language = data.original_language;
   const id = data.id;
   const image = {
@@ -64,7 +66,8 @@ export default function CardDetail({ route, navigation }) {
   //Functions
   const GetAll = async () => {
     try {
-      await axios.get(`/movie/${id}?api_key=${api}`).then((movie1) => {
+      await axios.get(`/${which}/${id}?api_key=${api}`).then((movie1) => {
+        if (data.backdrop_path != movie1.data.backdrop_path) setsame(false);
         if (movie1.data.genres.length > 1) {
           setgenre(movie1.data.genres);
           setruntime(movie1.data.runtime);
@@ -81,7 +84,6 @@ export default function CardDetail({ route, navigation }) {
       });
     } catch (err) {
       setload(true);
-      // console.warn(err);
     }
   };
   const onPressTouch = () => {
@@ -89,6 +91,19 @@ export default function CardDetail({ route, navigation }) {
       y: 0,
       animated: true,
     });
+  };
+  const Details = ({ check }) => {
+    if (check)
+      return (
+        <>
+          <Cast id={id} which={which} />
+          <Posters id={id} which={which} />
+          <ScreenShots id={id} which={which} />
+          <Similar id={id} navigation={navigation} which={which} />
+          <Suggestions id={id} navigation={navigation} which={which} />
+        </>
+      );
+    else return null;
   };
 
   //On Mount
@@ -105,136 +120,134 @@ export default function CardDetail({ route, navigation }) {
   //Main Function
   if (Load) {
     return (
-      <ScrollView style={{ backgroundColor: "white" }} ref={scrollRef}>
-        <View style={styles.viewStyle}>
-          <View style={styles.contain}>
-            <ImageBackground
-              source={image}
-              style={styles.image}
-            ></ImageBackground>
-          </View>
-          <View style={styles.posterContain}>
-            <Image
-              source={PosterImage}
-              style={{
-                flex: 1,
-                resizeMode: "cover",
-              }}
+      <>
+        <Ionicons
+          name="arrow-back"
+          style={styles.arrow}
+          onPress={() => navigation.goBack()}
+        />
+        <ScrollView style={{ backgroundColor: "white" }} ref={scrollRef}>
+          <View style={styles.viewStyle}>
+            <View style={styles.contain}>
+              <ImageBackground
+                source={image}
+                style={styles.image}
+              ></ImageBackground>
+            </View>
+            <View style={styles.posterContain}>
+              <Image
+                source={PosterImage}
+                style={{
+                  flex: 1,
+                  resizeMode: "cover",
+                }}
+              />
+            </View>
+            <AntDesign
+              name="play"
+              size={40}
+              color="red"
+              style={styles.playButton}
+              onPress={() => console.log("pressed")}
             />
-          </View>
-          <AntDesign
-            name="play"
-            size={40}
-            color="red"
-            style={styles.playButton}
-            onPress={() => console.log("pressed")}
-          />
-          <View style={styles.detailContainer}>
-            <Text style={styles.movieTitle}>
-              {data?.name ||
-                data?.title ||
-                data?.titlename ||
-                data?.original_name}
-            </Text>
-            <Text style={styles.genreTitle}>
-              {genre[0].name}, {genre[1].name}
-            </Text>
-            <View style={{ flexDirection: "row", marginTop: 10 }}>
-              <FontAwesome
-                style={{ marginRight: 5 }}
-                name={
-                  rate > 1 ? "star" : rate === 0 ? "star-o" : "star-half-full"
-                }
-                size={28}
-                color="red"
-              />
-              <FontAwesome
-                style={{ marginRight: 5 }}
-                name={
-                  rate > 3
-                    ? "star"
-                    : rate <= 2 && rate < 3
-                    ? "star-o"
-                    : "star-half-full"
-                }
-                size={28}
-                color="red"
-              />
-              <FontAwesome
-                style={{ marginRight: 5 }}
-                name={
-                  rate > 5
-                    ? "star"
-                    : rate <= 4 && rate < 5
-                    ? "star-o"
-                    : "star-half-full"
-                }
-                size={28}
-                color="red"
-              />
-              <FontAwesome
-                style={{ marginRight: 5 }}
-                name={
-                  rate > 7
-                    ? "star"
-                    : rate <= 6 && rate < 7
-                    ? "star-o"
-                    : "star-half-full"
-                }
-                size={28}
-                color="red"
-              />
-              <FontAwesome
-                style={{ marginRight: 5 }}
-                name={
-                  rate > 9
-                    ? "star"
-                    : rate <= 8 && rate < 9
-                    ? "star-o"
-                    : "star-half-full"
-                }
-                size={28}
-                color="red"
-              />
+            <View style={styles.detailContainer}>
+              <Text style={styles.movieTitle}>
+                {data?.name ||
+                  data?.title ||
+                  data?.titlename ||
+                  data?.original_name}
+              </Text>
+              <Text style={styles.genreTitle}>
+                {genre[0].name}, {genre[1].name}
+              </Text>
+              <View style={{ flexDirection: "row", marginTop: 10 }}>
+                <FontAwesome
+                  style={{ marginRight: 5 }}
+                  name={
+                    rate > 1 ? "star" : rate === 0 ? "star-o" : "star-half-full"
+                  }
+                  size={28}
+                  color="red"
+                />
+                <FontAwesome
+                  style={{ marginRight: 5 }}
+                  name={
+                    rate > 3
+                      ? "star"
+                      : rate <= 2 && rate < 3
+                      ? "star-o"
+                      : "star-half-full"
+                  }
+                  size={28}
+                  color="red"
+                />
+                <FontAwesome
+                  style={{ marginRight: 5 }}
+                  name={
+                    rate > 5
+                      ? "star"
+                      : rate <= 4 && rate < 5
+                      ? "star-o"
+                      : "star-half-full"
+                  }
+                  size={28}
+                  color="red"
+                />
+                <FontAwesome
+                  style={{ marginRight: 5 }}
+                  name={
+                    rate > 7
+                      ? "star"
+                      : rate <= 6 && rate < 7
+                      ? "star-o"
+                      : "star-half-full"
+                  }
+                  size={28}
+                  color="red"
+                />
+                <FontAwesome
+                  style={{ marginRight: 5 }}
+                  name={
+                    rate > 9
+                      ? "star"
+                      : rate <= 8 && rate < 9
+                      ? "star-o"
+                      : "star-half-full"
+                  }
+                  size={28}
+                  color="red"
+                />
+              </View>
+              <View style={{ flexDirection: "row", marginTop: 10 }}>
+                <View style={styles.yearStyle}>
+                  <Text style={styles.yearTextTitleStyle}>Year</Text>
+                  <Text style={styles.yearTextStyle}>{year}</Text>
+                </View>
+                <View style={styles.yearStyle}>
+                  <Text style={styles.yearTextTitleStyle}>Language</Text>
+                  <Text
+                    style={{
+                      ...styles.yearTextStyle,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    {Language}
+                  </Text>
+                </View>
+                <View style={styles.yearStyle}>
+                  <Text style={styles.yearTextTitleStyle}>Length</Text>
+                  <Text style={styles.yearTextStyle}>{runtime} min</Text>
+                </View>
+              </View>
+              <Text style={styles.overview}>{data.overview}</Text>
             </View>
-            <View style={{ flexDirection: "row", marginTop: 10 }}>
-              <View style={styles.yearStyle}>
-                <Text style={styles.yearTextTitleStyle}>Year</Text>
-                <Text style={styles.yearTextStyle}>{year}</Text>
-              </View>
-              <View style={styles.yearStyle}>
-                <Text style={styles.yearTextTitleStyle}>Language</Text>
-                <Text
-                  style={{
-                    ...styles.yearTextStyle,
-                    textTransform: "uppercase",
-                  }}
-                >
-                  {Language}
-                </Text>
-              </View>
-              <View style={styles.yearStyle}>
-                <Text style={styles.yearTextTitleStyle}>Length</Text>
-                <Text style={styles.yearTextStyle}>{runtime} min</Text>
-              </View>
-            </View>
-            <Text style={styles.overview}>{data.overview}</Text>
+
+            <Details check={same} />
+
+            {/*  */}
           </View>
-
-          {/* Cast */}
-          <Cast id={id} defaultSrc={data.poster_path} />
-
-          {/* Posters */}
-          <Posters id={id} />
-
-          {/* Screenshots */}
-          <ScreenShots id={id} />
-          {/* Screenshots */}
-          <Suggestions id={id} navigation={navigation} screen={false} />
-
-          {/*  */}
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </>
     );
   } else {
     return (
@@ -249,6 +262,20 @@ export default function CardDetail({ route, navigation }) {
 
 //Styles
 const styles = StyleSheet.create({
+  arrow: {
+    zIndex: 2,
+    fontSize: 35,
+    width: 36,
+    height: 35,
+    textAlignVertical: "center",
+    color: "black",
+    position: "absolute",
+    elevation: 31,
+    marginLeft: 10,
+    marginTop: 10,
+    backgroundColor: "white",
+    borderRadius: 35,
+  },
   playButton: {
     elevation: 31,
     bottom: -15,
@@ -269,7 +296,7 @@ const styles = StyleSheet.create({
   overview: {
     color: "grey",
     lineHeight: 20,
-    marginTop: 15,
+    marginVertical: 15,
     textAlign: "center",
     marginHorizontal: 35,
     fontSize: 16,
@@ -291,7 +318,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: windowWidth,
-    height: windowHeight / 2,
+    height: windowHeight / 1.8,
     resizeMode: "cover",
   },
   contain: {

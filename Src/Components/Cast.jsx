@@ -1,5 +1,5 @@
 //Imports
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -9,44 +9,45 @@ import {
   ActivityIndicator,
 } from "react-native";
 import axios from "../Components/axios";
+
 import api from "../../api";
 
 //Constants
-const url1 = "https://image.tmdb.org/t/p/w300";
+const url1 = "https://image.tmdb.org/t/p/w500";
 
-export default function Cast({ id, defaultSrc }) {
+export default function Cast({ id, which }) {
   //States
   const [cast, setcast] = useState([]);
   const [Load, setLoad] = useState(false);
+  const [Avail, setAvail] = useState(true);
 
-  //Consants
-  const castDefault = [
-    { id: 1, profile_path: defaultSrc },
-    { id: 2, profile_path: defaultSrc },
-    { id: 3, profile_path: defaultSrc },
-  ];
+  //Hooks
+  const flatListRef = useRef();
 
   //Functions
   const castFnc = async () => {
     await axios
-      .get(`/movie/${id}/credits?api_key=${api}`)
+      .get(`/${which}/${id}/credits?api_key=${api}`)
       .then((data) => {
-        setcast([...data.data.cast, ...castDefault]);
-        setLoad(true);
+        if (data.data.cast == 0) setAvail(false);
+        else {
+          setcast(data.data.cast);
+          setLoad(true);
+        }
       })
       .catch((err) => {
-        setcast(castDefault);
-        setLoad(true);
+        setAvail(false);
       });
+  };
+  const toStart = () => {
+    flatListRef.current?.scrollToIndex({ animated: true, index: 0 });
   };
 
   //On Mount
   useEffect(() => {
     castFnc();
+    toStart();
   }, [id]);
-
-  //Consoles
-  // console.log(cast);
 
   //Main Function
   if (Load) {
@@ -55,9 +56,10 @@ export default function Cast({ id, defaultSrc }) {
         <Text style={styles.castText}> Cast </Text>
         <View style={{ flexDirection: "row" }}>
           <FlatList
+            ref={flatListRef}
             horizontal
             showsHorizontalScrollIndicator={false}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item, index) => index.toString()}
             data={cast.slice(0, 10)}
             renderItem={({ item }) => {
               const image = {
@@ -65,13 +67,19 @@ export default function Cast({ id, defaultSrc }) {
               };
               if (item.profile_path == null) return null;
               else {
-                return <Image source={image} style={styles.cast} />;
+                return (
+                  <View style={{ overflow: "scroll" }}>
+                    <Image source={image} style={styles.cast} />
+                  </View>
+                );
               }
             }}
           />
         </View>
       </View>
     );
+  } else if (!Avail) {
+    return null;
   } else {
     return (
       <ActivityIndicator
@@ -93,6 +101,7 @@ const styles = StyleSheet.create({
     borderColor: "black",
   },
   castText: {
+    fontFamily: "Bebas",
     marginHorizontal: 10,
     marginBottom: 5,
     fontSize: 24,

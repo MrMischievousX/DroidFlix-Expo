@@ -12,12 +12,13 @@ import axios from "../Components/axios";
 import api from "../../api";
 
 //Constants
-const url1 = "https://image.tmdb.org/t/p/w300";
+const url1 = "https://image.tmdb.org/t/p/w500";
 
-export default function Cast({ id, defaultSrc }) {
+export default function Cast({ id, which }) {
   //States
   const [Screen, setScreen] = useState([]);
   const [Load, setLoad] = useState(false);
+  const [Avail, setAvail] = useState(true);
 
   //Hooks
   const flatListRef = useRef();
@@ -25,13 +26,16 @@ export default function Cast({ id, defaultSrc }) {
   //Functions
   const castFnc = async () => {
     await axios
-      .get(`/movie/${id}/images?api_key=${api}`)
+      .get(`/${which}/${id}/images?api_key=${api}`)
       .then((data) => {
-        setScreen(data.data.backdrops);
-        setLoad(true);
+        if (data.data.backdrops == 0) setAvail(false);
+        else {
+          setScreen(data.data.backdrops);
+          setLoad(true);
+        }
       })
       .catch((err) => {
-        setLoad(true);
+        setAvail(false);
       });
   };
   const toStart = () => {
@@ -43,9 +47,6 @@ export default function Cast({ id, defaultSrc }) {
     castFnc();
     toStart();
   }, [id]);
-
-  //Consoles
-  // console.log(cast);
 
   //Main Function
   if (Load) {
@@ -72,6 +73,8 @@ export default function Cast({ id, defaultSrc }) {
         </View>
       </View>
     );
+  } else if (!Avail) {
+    return null;
   } else {
     return (
       <ActivityIndicator
@@ -99,6 +102,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginBottom: 5,
     fontSize: 24,
+    fontFamily: "Bebas",
     fontWeight: "bold",
   },
   view: {

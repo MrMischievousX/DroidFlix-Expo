@@ -27,7 +27,7 @@ export default function Cast({ id, navigation, which }) {
   //Functions
   const castFnc = async () => {
     await axios
-      .get(`/${which}/${id}/recommendations?api_key=${api}`)
+      .get(`/${which}/${id}/similar?api_key=${api}&page=1`)
       .then((data) => {
         if (data.data.results == 0) setAvail(false);
         else {
@@ -53,7 +53,9 @@ export default function Cast({ id, navigation, which }) {
   if (Load) {
     return (
       <View style={styles.view}>
-        <Text style={styles.castText}> Suggestions </Text>
+        <Text style={styles.castText}>
+          Similar {which == "movie" ? "Movies" : "Tv Shows"}
+        </Text>
         <FlatList
           ref={flatListRef}
           horizontal

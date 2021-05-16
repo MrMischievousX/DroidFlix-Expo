@@ -1,4 +1,3 @@
-//Imports
 import React, { useEffect, useState, useRef } from "react";
 import {
   Pressable,
@@ -11,7 +10,6 @@ import {
 import axios from "./axios";
 import * as Font from "expo-font";
 
-//Function
 const fetchFonts = async () => {
   return Font.loadAsync({
     Bebas: require("../../assets/Fonts/Bebas.ttf"),
@@ -29,22 +27,26 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
 
   //Function
   async function getData() {
-    let res = await axios.get(fetchUrl + 2);
-    let arr = res.data.results;
-    res = await axios.get(fetchUrl + 3);
-    arr = arr.concat(res.data.results);
-    res = await axios.get(fetchUrl + 1);
-    arr = arr.concat(res.data.results);
-    res = await axios.get(fetchUrl + 4);
-    arr = arr.concat(res.data.results);
-    res = await axios.get(fetchUrl + 6);
-    arr = arr.concat(res.data.results);
-    res = await axios.get(fetchUrl + 5);
-    arr = arr.concat(res.data.results);
-    res = await axios.get(fetchUrl + 7);
-    arr = arr.concat(res.data.results);
-    setmovies(arr);
-    setload(true);
+    try {
+      let res = await axios.get(fetchUrl + 2);
+      let arr = res.data.results;
+      res = await axios.get(fetchUrl + 3);
+      arr = arr.concat(res.data.results);
+      res = await axios.get(fetchUrl + 1);
+      arr = arr.concat(res.data.results);
+      res = await axios.get(fetchUrl + 4);
+      arr = arr.concat(res.data.results);
+      res = await axios.get(fetchUrl + 6);
+      arr = arr.concat(res.data.results);
+      res = await axios.get(fetchUrl + 5);
+      arr = arr.concat(res.data.results);
+      res = await axios.get(fetchUrl + 7);
+      arr = arr.concat(res.data.results);
+      setmovies(arr);
+      setload(true);
+    } catch (e) {
+      setload(true);
+    }
   }
   const toStart = () => {
     flatListRef.current?.scrollToIndex({ animated: true, index: 0 });
@@ -57,7 +59,7 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
     toStart();
   }, []);
 
-  //Mian Function
+  //Main Function
   if (Load) {
     return (
       <>
@@ -66,11 +68,15 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
           ref={flatListRef}
           horizontal
           showsHorizontalScrollIndicator={false}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item) => item.id.toString()}
           data={movies}
           renderItem={({ item }) => {
             const image = {
-              uri: `${url}${thumb ? item.poster_path : item.backdrop_path}`,
+              uri: `${url}${
+                thumb
+                  ? item.poster_path
+                  : item.backdrop_path || item.poster_path
+              }`,
             };
             if (!(item.backdrop_path && item.poster_path)) return null;
             else
@@ -79,7 +85,7 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
                   onPress={() => {
                     navigation.navigate("CardDetail", {
                       data: item,
-                      which: "movie",
+                      which: "tv",
                     });
                   }}
                   style={
@@ -151,14 +157,21 @@ const Light = StyleSheet.create({
   viewStyleThumb: {
     height: 180,
     width: 120,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "black",
     marginHorizontal: 5,
     marginBottom: 10,
+    overflow: "hidden",
   },
 
   viewStyle: {
     overflow: "hidden",
     height: 120,
     width: 200,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "black",
     marginHorizontal: 5,
     marginBottom: 10,
   },
@@ -171,9 +184,6 @@ const Light = StyleSheet.create({
     letterSpacing: 1,
   },
   imageStyle: {
-    borderRadius: 20,
-    borderWidth: 1.5,
-    borderColor: "black",
     flex: 1,
     resizeMode: "cover",
   },
