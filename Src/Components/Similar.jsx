@@ -15,7 +15,7 @@ import api from "../../api";
 //Constants
 const url = "https://image.tmdb.org/t/p/w500";
 
-export default function Cast({ id, navigation, which }) {
+export default function Cast({ id, navigation, which, mode }) {
   //States
   const [recommend, setrecommend] = useState([]);
   const [Load, setLoad] = useState(false);
@@ -48,6 +48,37 @@ export default function Cast({ id, navigation, which }) {
     castFnc();
     toStart();
   }, [id]);
+
+  //Styles
+  const styles = StyleSheet.create({
+    viewStyle: {
+      overflow: "hidden",
+      height: 120,
+      width: 200,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: mode ? "white" : "black",
+      marginHorizontal: 5,
+      marginBottom: 10,
+    },
+    castText: {
+      color: mode ? "white" : "black",
+      marginHorizontal: 10,
+      marginBottom: 5,
+      fontSize: 24,
+      fontWeight: "bold",
+      fontFamily: "Bebas",
+    },
+    view: {
+      alignSelf: "flex-start",
+      marginTop: 10,
+      flex: 1,
+    },
+    imageStyle: {
+      flex: 1,
+      resizeMode: "cover",
+    },
+  });
 
   //Main Function
   if (Load) {
@@ -94,33 +125,3 @@ export default function Cast({ id, navigation, which }) {
     );
   }
 }
-
-//Styles
-const styles = StyleSheet.create({
-  viewStyle: {
-    overflow: "hidden",
-    height: 120,
-    width: 200,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "white",
-    marginHorizontal: 5,
-    marginBottom: 10,
-  },
-  castText: {
-    marginHorizontal: 10,
-    marginBottom: 5,
-    fontSize: 24,
-    fontWeight: "bold",
-    fontFamily: "Bebas",
-  },
-  view: {
-    alignSelf: "flex-start",
-    marginTop: 10,
-    flex: 1,
-  },
-  imageStyle: {
-    flex: 1,
-    resizeMode: "cover",
-  },
-});

@@ -4,11 +4,14 @@ const requests = {
     //Trending
     fetchTrending: `/trending/all/week?api_key=${api}&lanuage=en-US&page=3`,
     fetchNetflixOriginals: `/discover/tv?api_key=${api}&with_networks=213&page=`,
-    fetchUpcoming: `/movie/upcoming?api_key=${api}&with_genres=36&page=`,
+    fetchUpcoming: `/movie/upcoming?api_key=${api}&page=`,
     fetchTopRated: `/movie/top_rated?api_key=${api}&language=en-US&page=`,
     fetchPopular: `/movie/popular?api_key=${api}&language=en-US&page=`,
     fetchNowPlaying: `movie/now_playing?api_key=${api}&language=en-US&page=`,
     fetchDocumentaries: `/discover/movie?api_key=${api}&with_genres=99&page=`,
+    TvfetchAiring: `tv/airing_today?api_key=${api}`,
+    TvfetchPopular: `/tv/popular?api_key=${api}&language=en-US&page=`,
+    TvfetchTopRated: `/tv/top_rated?api_key=${api}&language=en-US&page=`,
 
     //Movies
     fetchActionMovies: `/discover/movie?api_key=${api}&with_genres=28&page=`,

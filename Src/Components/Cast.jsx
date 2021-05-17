@@ -15,7 +15,7 @@ import api from "../../api";
 //Constants
 const url1 = "https://image.tmdb.org/t/p/w500";
 
-export default function Cast({ id, which }) {
+export default function Cast({ id, which, mode }) {
   //States
   const [cast, setcast] = useState([]);
   const [Load, setLoad] = useState(false);
@@ -48,6 +48,31 @@ export default function Cast({ id, which }) {
     castFnc();
     toStart();
   }, [id]);
+
+  //Styles
+  const styles = StyleSheet.create({
+    cast: {
+      width: 80,
+      height: 80,
+      borderRadius: 100,
+      marginLeft: 10,
+      resizeMode: "cover",
+      borderWidth: 1,
+      borderColor: mode ? "white" : "black",
+    },
+    castText: {
+      color: mode ? "white" : "black",
+      fontFamily: "Bebas",
+      marginHorizontal: 10,
+      marginBottom: 5,
+      fontSize: 24,
+      fontWeight: "bold",
+    },
+    view: {
+      alignSelf: "flex-start",
+      marginVertical: 20,
+    },
+  });
 
   //Main Function
   if (Load) {
@@ -90,25 +115,3 @@ export default function Cast({ id, which }) {
     );
   }
 }
-const styles = StyleSheet.create({
-  cast: {
-    width: 80,
-    height: 80,
-    borderRadius: 100,
-    marginLeft: 10,
-    resizeMode: "cover",
-    borderWidth: 1,
-    borderColor: "black",
-  },
-  castText: {
-    fontFamily: "Bebas",
-    marginHorizontal: 10,
-    marginBottom: 5,
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  view: {
-    alignSelf: "flex-start",
-    marginVertical: 20,
-  },
-});

@@ -25,12 +25,12 @@ export default function Homescreen({ navigation, current }) {
 
   //Functions
   async function getData() {
-    const res = await axios.get(
-      request.fetchNetflixOriginals + Math.floor(Math.random() * 1) + 1
-    );
-    setdata(
-      res.data.results[Math.floor(Math.random() * res.data.results.length)]
-    );
+    await axios.get(request.TvfetchAiring).then((res) => {
+      setdata(
+        res.data.results[Math.floor(Math.random() * res.data.results.length)]
+      );
+      setload(true);
+    });
   }
 
   //Constants
@@ -45,9 +45,6 @@ export default function Homescreen({ navigation, current }) {
   useEffect(() => {
     setmode(current);
   }, [current]);
-  setTimeout(() => {
-    setload(true);
-  }, 1000);
 
   //Console Logs
 
@@ -78,7 +75,11 @@ export default function Homescreen({ navigation, current }) {
                 style={Dark ? styles.overlaytop : Light.overlaytop}
               />
               <View style={Dark ? styles.plus : Light.plus}>
-                <Text style={Dark ? styles.plusTitle : Light.plusTitle}>
+                <Text
+                  style={Dark ? styles.plusTitle : Light.plusTitle}
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                >
                   {data?.name ||
                     data?.title ||
                     data?.titlename ||

@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import axios from "./axios";
+import axiosX from "axios";
 import * as Font from "expo-font";
 
 //Function
@@ -28,23 +29,31 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
   const flatListRef = useRef();
 
   //Function
-  async function getData() {
-    let res = await axios.get(fetchUrl + 2);
-    let arr = res.data.results;
-    res = await axios.get(fetchUrl + 3);
-    arr = arr.concat(res.data.results);
-    res = await axios.get(fetchUrl + 1);
-    arr = arr.concat(res.data.results);
-    res = await axios.get(fetchUrl + 4);
-    arr = arr.concat(res.data.results);
-    res = await axios.get(fetchUrl + 6);
-    arr = arr.concat(res.data.results);
-    res = await axios.get(fetchUrl + 5);
-    arr = arr.concat(res.data.results);
-    res = await axios.get(fetchUrl + 7);
-    arr = arr.concat(res.data.results);
-    setmovies(arr);
-    setload(true);
+  async function getData(source) {
+    try {
+      let res = await axios.get(fetchUrl + 2, { cancelToken: source.token });
+      let arr = res.data.results;
+      res = await axios.get(fetchUrl + 3, { cancelToken: source.token });
+      arr = arr.concat(res.data.results);
+      res = await axios.get(fetchUrl + 1, { cancelToken: source.token });
+      arr = arr.concat(res.data.results);
+      res = await axios.get(fetchUrl + 4, { cancelToken: source.token });
+      arr = arr.concat(res.data.results);
+      res = await axios.get(fetchUrl + 6, { cancelToken: source.token });
+      arr = arr.concat(res.data.results);
+      res = await axios.get(fetchUrl + 5, { cancelToken: source.token });
+      arr = arr.concat(res.data.results);
+      res = await axios.get(fetchUrl + 7, { cancelToken: source.token });
+      arr = arr.concat(res.data.results);
+      setmovies(arr);
+      setload(true);
+    } catch (e) {
+      if (axiosX.isCancel(e)) {
+        console.log("cancelled");
+      } else {
+        throw e;
+      }
+    }
   }
   const toStart = () => {
     flatListRef.current?.scrollToIndex({ animated: true, index: 0 });
@@ -52,9 +61,15 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
 
   //On Mount
   useEffect(() => {
-    getData();
+    const CancelToken = axiosX.CancelToken;
+    const source = CancelToken.source();
+
+    getData(source);
     fetchFonts();
     toStart();
+    return () => {
+      source.cancel();
+    };
   }, []);
 
   //Main Function
@@ -80,6 +95,7 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
                     navigation.navigate("CardDetail", {
                       data: item,
                       which: "movie",
+                      mode: mode,
                     });
                   }}
                   style={

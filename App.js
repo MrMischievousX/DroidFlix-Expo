@@ -80,7 +80,6 @@ const Tab = createBottomTabNavigator();
 export default function App() {
   const [Load, setLoad] = React.useState(false)
   const [dark, setdark] = React.useState(true)
-  console.log(dark)
   if (!Load) {
     return (
       <>

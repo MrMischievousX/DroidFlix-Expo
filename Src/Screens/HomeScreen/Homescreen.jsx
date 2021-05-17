@@ -46,9 +46,16 @@ export default function Homescreen({ navigation, current }) {
   //OnMount
   useEffect(() => {
     getData();
+    return () => {
+      setdata([]);
+      setload(false);
+    };
   }, []);
   useEffect(() => {
     setmode(current);
+    return () => {
+      setmode(true);
+    };
   }, [current]);
 
   //Console Logs
@@ -58,17 +65,6 @@ export default function Homescreen({ navigation, current }) {
     return (
       <>
         <StatusBar />
-        <View style={Dark ? styles.header : Light.header}>
-          <Image
-            style={{ width: 100, height: 30, marginLeft: 20 }}
-            source={require("../../../assets/Logo.png")}
-          />
-          <MaterialCommunityIcons
-            size={28}
-            name="theme-light-dark"
-            style={Dark ? styles.mode : Light.mode}
-          />
-        </View>
         <ScrollView style={{ backgroundColor: Dark ? "black" : "#F4F4F4" }}>
           <View style={Dark ? styles.Banner : Light.Banner}>
             <ImageBackground
@@ -86,12 +82,20 @@ export default function Homescreen({ navigation, current }) {
                         "rgba(0,0,0,0.2)",
                         "transparent",
                       ]
-                    : ["white", "rgba(225,225,225,0.2)", "transparent"]
+                    : [
+                        "rgba(225,225,225,0.8)",
+                        "rgba(225,225,225,0.4)",
+                        "transparent",
+                      ]
                 }
                 style={Dark ? styles.overlaytop : Light.overlaytop}
               />
               <View style={Dark ? styles.plus : Light.plus}>
-                <Text style={Dark ? styles.plusTitle : Light.plusTitle}>
+                <Text
+                  style={Dark ? styles.plusTitle : Light.plusTitle}
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                >
                   {data?.name ||
                     data?.title ||
                     data?.titlename ||
@@ -130,7 +134,12 @@ export default function Homescreen({ navigation, current }) {
                         "rgba(0,0,0,0.8)",
                         "black",
                       ]
-                    : ["transparent", "rgba(225,225,225,0.2)", "white"]
+                    : [
+                        "transparent",
+                        "rgba(225,225,225,0.2)",
+                        "rgba(225,225,225,0.4)",
+                        "white",
+                      ]
                 }
                 style={Dark ? styles.overlay : Light.overlay}
               />
@@ -148,6 +157,13 @@ export default function Homescreen({ navigation, current }) {
             mode={Dark}
             title="Popular Movies"
             fetchUrl={request.fetchPopular}
+            navigation={navigation}
+          />
+          <Card
+            thumb={false}
+            mode={Dark}
+            title="Popular Tv shows"
+            fetchUrl={request.TvfetchPopular}
             navigation={navigation}
           />
           <Card
@@ -174,8 +190,15 @@ export default function Homescreen({ navigation, current }) {
           <Card
             thumb={false}
             mode={Dark}
-            title="Top Rated"
+            title="Top Rated movies"
             fetchUrl={request.fetchTopRated}
+            navigation={navigation}
+          />
+          <Card
+            thumb={false}
+            mode={Dark}
+            title="Top Rated Tv Shows"
+            fetchUrl={request.TvfetchTopRated}
             navigation={navigation}
           />
           <Card

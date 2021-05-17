@@ -6,7 +6,13 @@ export default function Settings({ click, dark, current }) {
     <View>
       <Text>Setting Screen</Text>
       <Button title="loadScreen" onPress={() => click(false)} />
-      <Button title="Mode Switch" onPress={() => dark(!current)} />
+      <Button
+        title="Mode Switch"
+        onPress={() => {
+          dark(!current);
+          click(false);
+        }}
+      />
     </View>
   );
 }

@@ -18,6 +18,7 @@ import ScreenShots from "./ScreenShots";
 import Suggestions from "./Suggestions";
 import Similar from "./Similar";
 import Posters from "./Posters";
+import axiosX from "axios";
 import api from "../../api";
 
 //Constants
@@ -53,7 +54,7 @@ export default function CardDetail({ route, navigation }) {
   const scrollRef = useRef();
 
   //Constants
-  const { data, which } = route.params;
+  const { data, which, mode } = route.params;
   const Language = data.original_language;
   const id = data.id;
   const image = {
@@ -64,26 +65,38 @@ export default function CardDetail({ route, navigation }) {
   };
 
   //Functions
-  const GetAll = async () => {
+  const GetAll = async (source) => {
     try {
-      await axios.get(`/${which}/${id}?api_key=${api}`).then((movie1) => {
-        if (data.backdrop_path != movie1.data.backdrop_path) setsame(false);
-        if (movie1.data.genres.length > 1) {
-          setgenre(movie1.data.genres);
-          setruntime(movie1.data.runtime);
-        }
-        setrate(data.vote_average);
-        setyear(
-          data.first_air_date
-            ? data.first_air_date.slice(0, 4)
-            : data.release_date.slice(0, 4)
-        );
-        setTimeout(() => {
-          setload(true);
-        }, 500);
-      });
-    } catch (err) {
+      await axios
+        .get(`/${which}/${id}?api_key=${api}`, { cancelToken: source.token })
+        .then((movie1) => {
+          if (data.backdrop_path != movie1.data.backdrop_path) setsame(false);
+          if (movie1.data.genres.length > 1) {
+            setgenre(movie1.data.genres);
+            setruntime(movie1.data.runtime);
+          }
+          setrate(data.vote_average);
+          setyear(
+            data.first_air_date
+              ? data.first_air_date.slice(0, 4)
+              : data.release_date.slice(0, 4)
+          );
+          setTimeout(() => {
+            setload(true);
+          }, 500);
+        })
+        .catch((err) => {
+          setTimeout(() => {
+            setload(true);
+          }, 500);
+        });
+    } catch (e) {
       setload(true);
+      if (axiosX.isCancel(e)) {
+        console.log("cancelled");
+      } else {
+        throw e;
+      }
     }
   };
   const onPressTouch = () => {
@@ -92,15 +105,20 @@ export default function CardDetail({ route, navigation }) {
       animated: true,
     });
   };
-  const Details = ({ check }) => {
+  const Details = ({ check, mode }) => {
     if (check)
       return (
         <>
-          <Cast id={id} which={which} />
-          <Posters id={id} which={which} />
-          <ScreenShots id={id} which={which} />
-          <Similar id={id} navigation={navigation} which={which} />
-          <Suggestions id={id} navigation={navigation} which={which} />
+          <Cast id={id} which={which} mode={mode} />
+          <Posters id={id} which={which} mode={mode} />
+          <ScreenShots id={id} which={which} mode={mode} />
+          <Similar id={id} navigation={navigation} which={which} mode={mode} />
+          <Suggestions
+            id={id}
+            navigation={navigation}
+            which={which}
+            mode={mode}
+          />
         </>
       );
     else return null;
@@ -108,14 +126,130 @@ export default function CardDetail({ route, navigation }) {
 
   //On Mount
   useEffect(() => {
-    fetchFonts();
-    GetAll();
-  }, []);
-  useEffect(() => {
     onPressTouch();
   }, [data]);
+  useEffect(() => {
+    const CancelToken = axiosX.CancelToken;
+    const source = CancelToken.source();
 
+    fetchFonts();
+    GetAll(source);
+    return () => {
+      source.cancel();
+    };
+  }, []);
   //Consoles
+
+  //Styles
+  const styles = StyleSheet.create({
+    arrow: {
+      zIndex: 2,
+      fontSize: 35,
+      width: 36,
+      height: 35,
+      textAlignVertical: "center",
+      color: !mode ? "black" : "white",
+      position: "absolute",
+      elevation: 31,
+      marginLeft: 10,
+      marginTop: 10,
+      backgroundColor: !mode ? "white" : "black",
+      borderRadius: 35,
+    },
+    playButton: {
+      elevation: 31,
+      bottom: -15,
+      overflow: "hidden",
+      backgroundColor: "white",
+      borderRadius: 50,
+      borderWidth: 2,
+      borderColor: "white",
+      textAlignVertical: "center",
+      textAlign: "center",
+      zIndex: 1,
+    },
+    yearStyle: {
+      width: 80,
+      height: 40,
+      marginHorizontal: 10,
+    },
+    overview: {
+      color: !mode ? "grey" : "white",
+      lineHeight: 20,
+      marginVertical: 15,
+      textAlign: "center",
+      marginHorizontal: 35,
+      fontSize: 16,
+    },
+    yearTextStyle: {
+      color: !mode ? "#221F22" : "white",
+      fontSize: 18,
+      textAlign: "center",
+      fontWeight: "bold",
+    },
+    yearTextTitleStyle: {
+      color: !mode ? "grey" : "white",
+      fontSize: 16,
+      textAlign: "center",
+      fontWeight: "700",
+    },
+    viewStyle: {
+      alignItems: "center",
+    },
+    image: {
+      width: windowWidth,
+      height: windowHeight / 1.8,
+      resizeMode: "cover",
+    },
+    contain: {
+      width: 700,
+      height: 350,
+      alignItems: "center",
+      borderBottomLeftRadius: 1000,
+      borderBottomRightRadius: 1000,
+      overflow: "hidden",
+      elevation: 29,
+      backgroundColor: !mode ? "white" : "black",
+    },
+    posterContain: {
+      overflow: "hidden",
+      position: "absolute",
+      width: 120,
+      height: 170,
+      top: 220,
+      borderWidth: 2,
+      borderColor: "white",
+      borderRadius: 30,
+      elevation: 30,
+      backgroundColor: "white",
+    },
+    detailContainer: {
+      marginTop: 30,
+      alignItems: "center",
+    },
+    movieTitle: {
+      color: !mode ? "#221F22" : "white",
+      fontSize: 28,
+      textAlign: "center",
+      letterSpacing: 1,
+      marginHorizontal: 50,
+      fontFamily: "Bebas",
+      textAlign: "center",
+      fontWeight: "bold",
+      textTransform: "uppercase",
+    },
+    genreTitle: {
+      letterSpacing: 1,
+      fontSize: 18,
+      marginHorizontal: 50,
+      marginTop: 5,
+      color: !mode ? "#221F22" : "white",
+      fontFamily: "Bebas",
+      textAlign: "center",
+      fontWeight: "600",
+      textTransform: "uppercase",
+    },
+  });
 
   //Main Function
   if (Load) {
@@ -126,7 +260,10 @@ export default function CardDetail({ route, navigation }) {
           style={styles.arrow}
           onPress={() => navigation.goBack()}
         />
-        <ScrollView style={{ backgroundColor: "white" }} ref={scrollRef}>
+        <ScrollView
+          style={{ backgroundColor: mode ? "black" : "white" }}
+          ref={scrollRef}
+        >
           <View style={styles.viewStyle}>
             <View style={styles.contain}>
               <ImageBackground
@@ -242,7 +379,7 @@ export default function CardDetail({ route, navigation }) {
               <Text style={styles.overview}>{data.overview}</Text>
             </View>
 
-            <Details check={same} />
+            <Details check={same} mode={mode} />
 
             {/*  */}
           </View>
@@ -259,115 +396,3 @@ export default function CardDetail({ route, navigation }) {
     );
   }
 }
-
-//Styles
-const styles = StyleSheet.create({
-  arrow: {
-    zIndex: 2,
-    fontSize: 35,
-    width: 36,
-    height: 35,
-    textAlignVertical: "center",
-    color: "black",
-    position: "absolute",
-    elevation: 31,
-    marginLeft: 10,
-    marginTop: 10,
-    backgroundColor: "white",
-    borderRadius: 35,
-  },
-  playButton: {
-    elevation: 31,
-    bottom: -15,
-    overflow: "hidden",
-    backgroundColor: "white",
-    borderRadius: 50,
-    borderWidth: 2,
-    borderColor: "white",
-    textAlignVertical: "center",
-    textAlign: "center",
-    zIndex: 1,
-  },
-  yearStyle: {
-    width: 80,
-    height: 40,
-    marginHorizontal: 10,
-  },
-  overview: {
-    color: "grey",
-    lineHeight: 20,
-    marginVertical: 15,
-    textAlign: "center",
-    marginHorizontal: 35,
-    fontSize: 16,
-  },
-  yearTextStyle: {
-    color: "#221F22",
-    fontSize: 18,
-    textAlign: "center",
-    fontWeight: "bold",
-  },
-  yearTextTitleStyle: {
-    color: "grey",
-    fontSize: 16,
-    textAlign: "center",
-    fontWeight: "700",
-  },
-  viewStyle: {
-    alignItems: "center",
-  },
-  image: {
-    width: windowWidth,
-    height: windowHeight / 1.8,
-    resizeMode: "cover",
-  },
-  contain: {
-    width: 700,
-    height: 350,
-    alignItems: "center",
-    borderBottomLeftRadius: 1000,
-    borderBottomRightRadius: 1000,
-    overflow: "hidden",
-    elevation: 29,
-    backgroundColor: "white",
-  },
-  posterContain: {
-    overflow: "hidden",
-    position: "absolute",
-    width: 120,
-    height: 170,
-    top: 220,
-    borderWidth: 2,
-    borderColor: "white",
-    borderRadius: 30,
-    elevation: 30,
-    backgroundColor: "white",
-  },
-  detailContainer: {
-    marginTop: 30,
-    alignItems: "center",
-  },
-  movieTitle: {
-    color: "#201D20",
-    fontSize: 28,
-    textAlign: "center",
-    letterSpacing: 1,
-    marginHorizontal: 50,
-    color: "#221F22",
-    fontFamily: "Bebas",
-    textAlign: "center",
-    fontWeight: "bold",
-    textTransform: "uppercase",
-  },
-  genreTitle: {
-    letterSpacing: 1,
-    fontSize: 18,
-    marginHorizontal: 50,
-    marginTop: 5,
-    color: "#221F22",
-    fontFamily: "Bebas",
-    textAlign: "center",
-    fontWeight: "600",
-    textTransform: "uppercase",
-  },
-});

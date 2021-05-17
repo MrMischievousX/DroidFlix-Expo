@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import axios from "./axios";
+import axiosX from "axios";
 import * as Font from "expo-font";
 
 const fetchFonts = async () => {
@@ -26,26 +27,30 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
   const flatListRef = useRef();
 
   //Function
-  async function getData() {
+  async function getData(source) {
     try {
-      let res = await axios.get(fetchUrl + 2);
+      let res = await axios.get(fetchUrl + 2, { cancelToken: source.token });
       let arr = res.data.results;
-      res = await axios.get(fetchUrl + 3);
+      res = await axios.get(fetchUrl + 3, { cancelToken: source.token });
       arr = arr.concat(res.data.results);
-      res = await axios.get(fetchUrl + 1);
+      res = await axios.get(fetchUrl + 1, { cancelToken: source.token });
       arr = arr.concat(res.data.results);
-      res = await axios.get(fetchUrl + 4);
+      res = await axios.get(fetchUrl + 4, { cancelToken: source.token });
       arr = arr.concat(res.data.results);
-      res = await axios.get(fetchUrl + 6);
+      res = await axios.get(fetchUrl + 6, { cancelToken: source.token });
       arr = arr.concat(res.data.results);
-      res = await axios.get(fetchUrl + 5);
+      res = await axios.get(fetchUrl + 5, { cancelToken: source.token });
       arr = arr.concat(res.data.results);
-      res = await axios.get(fetchUrl + 7);
+      res = await axios.get(fetchUrl + 7, { cancelToken: source.token });
       arr = arr.concat(res.data.results);
       setmovies(arr);
       setload(true);
     } catch (e) {
-      setload(true);
+      if (axiosX.isCancel(e)) {
+        console.log("cancelled");
+      } else {
+        throw e;
+      }
     }
   }
   const toStart = () => {
@@ -54,9 +59,15 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
 
   //On Mount
   useEffect(() => {
-    getData();
+    const CancelToken = axiosX.CancelToken;
+    const source = CancelToken.source();
+
+    getData(source);
     fetchFonts();
     toStart();
+    return () => {
+      source.cancel();
+    };
   }, []);
 
   //Main Function
