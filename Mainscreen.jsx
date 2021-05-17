@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   ImageBackground,
   StyleSheet,
+  Dimensions,
 } from "react-native";
 import AppLoading from "expo-app-loading";
-import { Dimensions } from "react-native";
 
 //Constants
 const windowWidth = Dimensions.get("window").width;

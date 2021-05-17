@@ -14,16 +14,48 @@ import Mainscreen from "./Mainscreen"
 
 //Homestack
 const HomeStack = createStackNavigator();
-function HomeStackScreen({ current }) {
+function HomeStackScreen({ current, navigation }) {
   return (
     <HomeStack.Navigator
       screenOptions={{
         headerShown: false,
       }}
     >
-      <HomeStack.Screen name="Home" children={() => <Homescreen current={current} />} />
-      <HomeStack.Screen name="CardDetail" children={() => <CardDetail />} />
+      <HomeStack.Screen name="Home" children={() => <Homescreen navigation={navigation} current={current} />} />
+      <HomeStack.Screen name="CardDetail" children={({ route, navigation }) =>
+        <CardDetail route={route} navigation={navigation} />
+      } />
     </HomeStack.Navigator>
+  );
+}
+
+//Moviestack
+const MovieStack = createStackNavigator();
+function MovieStackScreen({ current, navigation }) {
+  return (
+    <MovieStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <MovieStack.Screen name="Movie" children={() => <Movie current={current} navigation={navigation} />} />
+      <MovieStack.Screen name="CardDetail" children={({ route, navigation }) => < CardDetail route={route} navigation={navigation} />} />
+    </MovieStack.Navigator>
+  );
+}
+
+//Tvstack
+const TvStack = createStackNavigator();
+function TvShowStackScreen({ current, navigation }) {
+  return (
+    <TvStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <TvStack.Screen name="TvShows" children={() => <TvShows current={current} navigation={navigation} />} />
+      <TvStack.Screen name="CardDetail" children={({ route, navigation }) => <CardDetail route={route} navigation={navigation} />} />
+    </TvStack.Navigator>
   );
 }
 
@@ -41,35 +73,7 @@ function SearchStackScreen() {
   );
 }
 
-//Moviestack
-const MovieStack = createStackNavigator();
-function MovieStackScreen() {
-  return (
-    <MovieStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <MovieStack.Screen name="Movie" children={() => <Movie />} />
-      <MovieStack.Screen name="CardDetail" children={() => <CardDetail />} />
-    </MovieStack.Navigator>
-  );
-}
 
-//Tvstack
-const TvStack = createStackNavigator();
-function TvShowStackScreen() {
-  return (
-    <TvStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <TvStack.Screen name="TvShows" children={() => <TvShows />} />
-      <TvStack.Screen name="CardDetail" children={() => <CardDetail />} />
-    </TvStack.Navigator>
-  );
-}
 
 //Tabnavigator
 const Tab = createBottomTabNavigator();
@@ -132,15 +136,15 @@ export default function App() {
           }}
         >
           <Tab.Screen name="Home"
-            children={() => <HomeStackScreen current={dark} />} />
+            children={({ navigation }) => <HomeStackScreen current={dark} navigation={navigation} />} />
           <Tab.Screen name="Movies"
-            children={() => <MovieStackScreen current={dark} />} />
+            children={({ navigation }) => <MovieStackScreen current={dark} navigation={navigation} />} />
           <Tab.Screen name="Tv Shows"
-            children={() => <TvShowStackScreen current={dark} />} />
+            children={({ navigation }) => <TvShowStackScreen current={dark} navigation={navigation} />} />
           <Tab.Screen name="Search"
-            children={() => <SearchStackScreen current={dark} />} />
+            children={({ navigation }) => <SearchStackScreen current={dark} navigation={navigation} />} />
           <Tab.Screen name="Settings"
-            children={() => <Settings click={setLoad} dark={setdark} current={dark} />} />
+            children={(navigation) => <Settings click={setLoad} dark={setdark} navigation={navigation} current={dark} />} />
         </Tab.Navigator>
       </NavigationContainer>
     );

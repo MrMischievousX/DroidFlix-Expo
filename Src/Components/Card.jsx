@@ -57,7 +57,7 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
     toStart();
   }, []);
 
-  //Mian Function
+  //Main Function
   if (Load) {
     return (
       <>
