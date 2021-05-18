@@ -9,23 +9,19 @@ import {
   ImageBackground,
   ActivityIndicator,
   Dimensions,
+  FlatList,
+  Pressable,
+  Alert,
+  TouchableOpacity,
+  Linking,
 } from "react-native";
-import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
-import axios from "../Components/axios";
-import * as Font from "expo-font";
-import Cast from "./Cast";
-import ScreenShots from "./ScreenShots";
-import Suggestions from "./Suggestions";
-import Similar from "./Similar";
-import Posters from "./Posters";
+import { AntDesign, FontAwesome, Ionicons, Feather } from "@expo/vector-icons";
 import axiosX from "axios";
-import api from "../../api";
+import * as Font from "expo-font";
 
 //Constants
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
-const url1 = "https://image.tmdb.org/t/p/original";
-const url2 = "https://image.tmdb.org/t/p/w500";
 
 //Functions
 const fetchFonts = async () => {
@@ -36,62 +32,52 @@ const fetchFonts = async () => {
 
 export default function CardDetail({ route, navigation }) {
   //States
-  const [genre, setgenre] = useState([
-    {
-      name: "Action",
-    },
-    {
-      name: "Adventure",
-    },
-  ]);
   const [Load, setload] = useState(false);
-  const [rate, setrate] = useState(8);
-  const [runtime, setruntime] = useState(120);
-  const [year, setyear] = useState(2012);
-  const [same, setsame] = useState(true);
+  const [suggestions, setsuggestions] = useState([]);
 
   //Hooks
   const scrollRef = useRef();
 
   //Constants
-  const { data, which, mode } = route.params;
-  const Language = data.original_language;
+  const { data, mode } = route.params;
   const id = data.id;
-  const image = {
-    uri: `${url1}${data.backdrop_path || data.poster_path}`,
-  };
-  const PosterImage = {
-    uri: `${url2}${data.poster_path}`,
-  };
+  const Language = data.language;
+  const title = data.title_english;
+  const magnetTitle = title.split(" ").join("%20");
+  const year = data.year;
+  const rate = data.rating;
+  const runtime = data.runtime;
+  const poster = data.large_cover_image || data.medium_cover_image;
+  const genre = data.genres;
+  const overview = data.description_full;
+  const _720p = data.torrents.filter((torrent) => torrent.quality == "720p");
+  const _1080p = data.torrents.filter((torrent) => torrent.quality == "1080p");
+  const magnet720p = `magnet:?xt=urn:btih:${_720p.hash}&dn=${magnetTitle}&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ftorrent.gresille.org%3A80%2Fannounce&tr=udp%3A%2F%2Fp4p.arenabg.com%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969`;
+  const magnet1080p = `magnet:?xt=urn:btih:${_1080p}&dn=${magnetTitle}&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ftorrent.gresille.org%3A80%2Fannounce&tr=udp%3A%2F%2Fp4p.arenabg.com%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969`;
 
   //Functions
-  const GetAll = async (source) => {
+  const search = async (source) => {
     try {
-      await axios
-        .get(`/${which}/${id}?api_key=${api}`, { cancelToken: source.token })
-        .then((movie1) => {
-          if (data.backdrop_path != movie1.data.backdrop_path) setsame(false);
-          if (movie1.data.genres.length > 1) {
-            setgenre(movie1.data.genres);
-            setruntime(movie1.data.runtime);
-          }
-          setrate(data.vote_average);
-          setyear(
-            data.first_air_date
-              ? data.first_air_date.slice(0, 4)
-              : data.release_date.slice(0, 4)
-          );
+      await axiosX
+        .get(`https://yts.mx/api/v2/movie_suggestions.json?movie_id=${id}`, {
+          cancelToken: source.token,
+        })
+        .then((data) => {
+          setsuggestions(data.data.data.movies);
           setTimeout(() => {
             setload(true);
           }, 1000);
         })
         .catch((err) => {
+          console.log(err);
           setTimeout(() => {
             setload(true);
           }, 1000);
         });
     } catch (e) {
-      setload(true);
+      setTimeout(() => {
+        setload(true);
+      }, 1000);
       if (axiosX.isCancel(e)) {
         console.log("cancelled");
       } else {
@@ -105,52 +91,84 @@ export default function CardDetail({ route, navigation }) {
       animated: true,
     });
   };
-  const Details = ({ check, mode }) => {
-    if (check)
-      return (
-        <>
-          <Cast id={id} which={which} mode={mode} />
-          <Posters id={id} which={which} mode={mode} />
-          <ScreenShots id={id} which={which} mode={mode} />
-          <Similar
-            id={id}
-            navigation={navigation}
-            which={which}
-            mode={mode}
-            pause={setload}
-          />
-          <Suggestions
-            id={id}
-            navigation={navigation}
-            which={which}
-            mode={mode}
-            pause={setload}
-          />
-        </>
-      );
-    else return null;
+  const List = ({ data, navigation }) => {
+    return (
+      <>
+        <Text style={styles.SuggestionsText}> Suggestions </Text>
+        <FlatList
+          style={{ backgroundColor: mode ? "black" : "white" }}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(item, index) => index.toString()}
+          data={data}
+          renderItem={({ item }) => {
+            const image = {
+              uri: item.large_cover_image || item.medium_cover_image,
+            };
+            if (!(item.large_cover_image || item.medium_cover_image))
+              return null;
+            else
+              return (
+                <Pressable
+                  onPress={() => {
+                    setload(false);
+                    navigation.navigate("DownloadDetail", {
+                      data: item,
+                      mode: mode,
+                    });
+                  }}
+                  style={styles.viewStyleSuggestions}
+                >
+                  <Image source={image} style={styles.imageStyle} />
+                </Pressable>
+              );
+          }}
+        />
+      </>
+    );
   };
 
   //On Mount
   useEffect(() => {
-    setTimeout(() => {
-      setload(true);
-    }, 1000);
-    onPressTouch();
-  }, [data]);
-  useEffect(() => {
     const CancelToken = axiosX.CancelToken;
     const source = CancelToken.source();
-    fetchFonts();
-    GetAll(source);
+    search(source);
+    onPressTouch();
     return () => {
       source.cancel();
     };
+  }, [data]);
+  useEffect(() => {
+    fetchFonts();
   }, []);
+
   //Consoles
 
   //Styles
   const styles = StyleSheet.create({
+    SuggestionsText: {
+      color: mode ? "white" : "black",
+      marginHorizontal: 10,
+      alignSelf: "flex-start",
+      marginBottom: 5,
+      fontSize: 24,
+      fontWeight: "bold",
+      fontFamily: "Bebas",
+    },
+    viewStyleSuggestions: {
+      overflow: "hidden",
+      height: 120,
+      width: 200,
+      marginHorizontal: 5,
+      marginBottom: 10,
+    },
+    imageStyle: {
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: mode ? "white" : "black",
+      flex: 1,
+      resizeMode: "cover",
+    },
     arrowView: {
       width: 35,
       height: 35,
@@ -191,7 +209,7 @@ export default function CardDetail({ route, navigation }) {
       lineHeight: 20,
       marginVertical: 15,
       textAlign: "center",
-      marginHorizontal: 35,
+      marginHorizontal: 25,
       fontSize: 16,
     },
     yearTextStyle: {
@@ -283,13 +301,13 @@ export default function CardDetail({ route, navigation }) {
           <View style={styles.viewStyle}>
             <View style={styles.contain}>
               <ImageBackground
-                source={image}
+                source={{ uri: poster }}
                 style={styles.image}
               ></ImageBackground>
             </View>
             <View style={styles.posterContain}>
               <Image
-                source={PosterImage}
+                source={{ uri: poster }}
                 style={{
                   flex: 1,
                   resizeMode: "cover",
@@ -304,14 +322,13 @@ export default function CardDetail({ route, navigation }) {
               onPress={() => console.log("pressed")}
             />
             <View style={styles.detailContainer}>
-              <Text style={styles.movieTitle}>
-                {data?.name ||
-                  data?.title ||
-                  data?.titlename ||
-                  data?.original_name}
-              </Text>
+              <Text style={styles.movieTitle}>{title}</Text>
               <Text style={styles.genreTitle}>
-                {genre[0].name}, {genre[1].name}
+                {genre[0] || null}
+                {"  "} {genre[1] || null} {"  "}
+                {genre[2] || null}
+                {"  "}
+                {genre[3] || null}
               </Text>
               <View style={{ flexDirection: "row", marginTop: 10 }}>
                 <FontAwesome
@@ -371,7 +388,56 @@ export default function CardDetail({ route, navigation }) {
                   color="red"
                 />
               </View>
-              <View style={{ flexDirection: "row", marginTop: 10 }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginVertical: 10,
+                  width: windowWidth / 2.3,
+                  justifyContent: "space-between",
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    padding: 2,
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  onPress={() => Linking.openURL(magnet720p)}
+                >
+                  <Feather name="download" size={24} color="#2196F3" />
+                  <Text
+                    style={{
+                      color: mode ? "white" : "black",
+                      marginLeft: 5,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    720p
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    padding: 2,
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                  onPress={() => Linking.openURL(magnet1080p)}
+                >
+                  <Feather name="download" size={24} color="#2196F3" />
+                  <Text
+                    style={{
+                      color: mode ? "white" : "black",
+                      marginLeft: 5,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    1080p
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View style={{ flexDirection: "row", marginTop: 5 }}>
                 <View style={styles.yearStyle}>
                   <Text style={styles.yearTextTitleStyle}>Year</Text>
                   <Text style={styles.yearTextStyle}>{year}</Text>
@@ -392,11 +458,9 @@ export default function CardDetail({ route, navigation }) {
                   <Text style={styles.yearTextStyle}>{runtime} min</Text>
                 </View>
               </View>
-              <Text style={styles.overview}>{data.overview}</Text>
+              <Text style={styles.overview}>{overview}</Text>
             </View>
-
-            <Details check={same} mode={mode} />
-
+            <List data={suggestions} navigation={navigation} />
             {/*  */}
           </View>
         </ScrollView>

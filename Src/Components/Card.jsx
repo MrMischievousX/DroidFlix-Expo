@@ -21,32 +21,27 @@ const fetchFonts = async () => {
 
 export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
   //States
-  let [movies, setmovies] = useState([]);
+  const [movies, setmovies] = useState([]);
   const [Load, setload] = useState(false);
   const url = "https://image.tmdb.org/t/p/w500";
+  const [count, setcount] = useState(1);
 
   //Hooks
   const flatListRef = useRef();
+  const CancelToken = axiosX.CancelToken;
+  const source = CancelToken.source();
 
   //Function
   async function getData(source) {
     try {
-      let res = await axios.get(fetchUrl + 2, { cancelToken: source.token });
-      let arr = res.data.results;
-      res = await axios.get(fetchUrl + 3, { cancelToken: source.token });
-      arr = arr.concat(res.data.results);
-      res = await axios.get(fetchUrl + 1, { cancelToken: source.token });
-      arr = arr.concat(res.data.results);
-      res = await axios.get(fetchUrl + 4, { cancelToken: source.token });
-      arr = arr.concat(res.data.results);
-      res = await axios.get(fetchUrl + 6, { cancelToken: source.token });
-      arr = arr.concat(res.data.results);
-      res = await axios.get(fetchUrl + 5, { cancelToken: source.token });
-      arr = arr.concat(res.data.results);
-      res = await axios.get(fetchUrl + 7, { cancelToken: source.token });
-      arr = arr.concat(res.data.results);
+      let res = await axios.get(fetchUrl + count, {
+        cancelToken: source.token,
+      });
+      let arr = movies.concat(res.data.results);
       setmovies(arr);
-      setload(true);
+      setTimeout(() => {
+        setload(true);
+      }, 500);
     } catch (e) {
       if (axiosX.isCancel(e)) {
         console.log("cancelled");
@@ -61,9 +56,6 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
 
   //On Mount
   useEffect(() => {
-    const CancelToken = axiosX.CancelToken;
-    const source = CancelToken.source();
-
     getData(source);
     fetchFonts();
     toStart();
@@ -71,6 +63,14 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
       source.cancel();
     };
   }, []);
+  useEffect(() => {
+    getData(source);
+    return () => {
+      source.cancel();
+    };
+  }, [count]);
+
+  //Consoles.
 
   //Main Function
   if (Load) {
@@ -80,6 +80,8 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
         <FlatList
           ref={flatListRef}
           horizontal
+          onEndReached={() => setcount(count + 1)}
+          onEndReachedThreshold={0.7}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item, index) => index.toString()}
           data={movies}
@@ -138,7 +140,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     marginBottom: 10,
   },
-
   viewStyle: {
     overflow: "hidden",
     height: 120,
@@ -170,7 +171,6 @@ const Light = StyleSheet.create({
     marginHorizontal: 5,
     marginBottom: 10,
   },
-
   viewStyle: {
     overflow: "hidden",
     height: 120,

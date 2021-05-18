@@ -15,7 +15,7 @@ import api from "../../api";
 //Constants
 const url = "https://image.tmdb.org/t/p/w500";
 
-export default function Cast({ id, navigation, which, mode }) {
+export default function Cast({ id, navigation, which, mode, pause }) {
   //States
   const [recommend, setrecommend] = useState([]);
   const [Load, setLoad] = useState(false);
@@ -55,9 +55,6 @@ export default function Cast({ id, navigation, which, mode }) {
       overflow: "hidden",
       height: 120,
       width: 200,
-      borderRadius: 20,
-      borderWidth: 1,
-      borderColor: mode ? "white" : "black",
       marginHorizontal: 5,
       marginBottom: 10,
     },
@@ -75,6 +72,9 @@ export default function Cast({ id, navigation, which, mode }) {
       flex: 1,
     },
     imageStyle: {
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: mode ? "white" : "black",
       flex: 1,
       resizeMode: "cover",
     },
@@ -102,6 +102,7 @@ export default function Cast({ id, navigation, which, mode }) {
               return (
                 <Pressable
                   onPress={() => {
+                    pause(false);
                     navigation.navigate("CardDetail", { data: item });
                   }}
                   style={styles.viewStyle}

@@ -11,7 +11,7 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import Card from "../../Components/Card";
 import axios from "../../Components/axios";
 import request from "../../Components/request";
@@ -65,6 +65,12 @@ export default function Homescreen({ navigation, current }) {
     return (
       <>
         <StatusBar />
+        <View style={Dark ? styles.header : Light.header}>
+          <Image
+            style={{ width: 100, height: 30, marginLeft: 20 }}
+            source={require("../../../assets/Logo.png")}
+          />
+        </View>
         <ScrollView style={{ backgroundColor: Dark ? "black" : "#F4F4F4" }}>
           <View style={Dark ? styles.Banner : Light.Banner}>
             <ImageBackground
@@ -225,9 +231,8 @@ export default function Homescreen({ navigation, current }) {
 //Styles
 const styles = StyleSheet.create({
   header: {
-    paddingTop: 5,
+    paddingTop: 10,
     backgroundColor: "black",
-    justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
   },
@@ -301,7 +306,6 @@ const Light = StyleSheet.create({
   header: {
     paddingTop: 5,
     backgroundColor: "white",
-    justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
   },

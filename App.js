@@ -9,6 +9,7 @@ import Settings from "./Src/Screens/SettingScreen/Settings";
 import TvShows from "./Src/Screens/TvScreen/TvShows";
 import Homescreen from "./Src/Screens/HomeScreen/Homescreen";
 import CardDetail from "./Src/Components/CardDetail";
+import DownloadDetail from "./Src/Components/DownloadDetail";
 import { MaterialCommunityIcons, Ionicons } from "react-native-vector-icons";
 import Mainscreen from "./Mainscreen"
 
@@ -61,14 +62,15 @@ function TvShowStackScreen({ current, navigation }) {
 
 //Searchstack
 const SearchStack = createStackNavigator();
-function SearchStackScreen() {
+function SearchStackScreen({ current, navigation }) {
   return (
     <SearchStack.Navigator
       screenOptions={{
         headerShown: false,
       }}
     >
-      <SearchStack.Screen name="Search" component={Search} />
+      <SearchStack.Screen name="Search" children={() => <Search current={current} navigation={navigation} />} />
+      <SearchStack.Screen name="DownloadDetail" children={({ route, navigation }) => <DownloadDetail navigation={navigation} route={route} />} />
     </SearchStack.Navigator>
   );
 }

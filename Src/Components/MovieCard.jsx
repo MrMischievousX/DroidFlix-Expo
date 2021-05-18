@@ -7,10 +7,15 @@ import {
   FlatList,
   Image,
   ActivityIndicator,
+  Dimensions,
 } from "react-native";
 import axios from "./axios";
 import axiosX from "axios";
 import * as Font from "expo-font";
+
+//Constants
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 //Function
 const fetchFonts = async () => {
@@ -19,32 +24,25 @@ const fetchFonts = async () => {
   });
 };
 
-export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
+export default function Card({ title, fetchUrl, mode, navigation }) {
   //States
-  let [movies, setmovies] = useState([]);
+  const [movies, setmovies] = useState([]);
   const [Load, setload] = useState(false);
   const url = "https://image.tmdb.org/t/p/w500";
+  const [count, setcount] = useState(1);
 
   //Hooks
   const flatListRef = useRef();
+  const CancelToken = axiosX.CancelToken;
+  const source = CancelToken.source();
 
   //Function
   async function getData(source) {
     try {
-      let res = await axios.get(fetchUrl + 2, { cancelToken: source.token });
-      let arr = res.data.results;
-      res = await axios.get(fetchUrl + 3, { cancelToken: source.token });
-      arr = arr.concat(res.data.results);
-      res = await axios.get(fetchUrl + 1, { cancelToken: source.token });
-      arr = arr.concat(res.data.results);
-      res = await axios.get(fetchUrl + 4, { cancelToken: source.token });
-      arr = arr.concat(res.data.results);
-      res = await axios.get(fetchUrl + 6, { cancelToken: source.token });
-      arr = arr.concat(res.data.results);
-      res = await axios.get(fetchUrl + 5, { cancelToken: source.token });
-      arr = arr.concat(res.data.results);
-      res = await axios.get(fetchUrl + 7, { cancelToken: source.token });
-      arr = arr.concat(res.data.results);
+      let res = await axios.get(fetchUrl + count, {
+        cancelToken: source.token,
+      });
+      let arr = movies.concat(res.data.results);
       setmovies(arr);
       setload(true);
     } catch (e) {
@@ -61,9 +59,6 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
 
   //On Mount
   useEffect(() => {
-    const CancelToken = axiosX.CancelToken;
-    const source = CancelToken.source();
-
     getData(source);
     fetchFonts();
     toStart();
@@ -71,8 +66,14 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
       source.cancel();
     };
   }, []);
+  useEffect(() => {
+    getData(source);
+    return () => {
+      source.cancel();
+    };
+  }, [count]);
 
-  //Mian Function
+  //Main Function
   if (Load) {
     return (
       <>
@@ -80,16 +81,14 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
         <FlatList
           horizontal
           ref={flatListRef}
+          onEndReached={() => setcount(count + 1)}
+          onEndReachedThreshold={0.7}
           showsHorizontalScrollIndicator={false}
           keyExtractor={(item) => item.id.toString()}
           data={movies}
           renderItem={({ item }) => {
             const image = {
-              uri: `${url}${
-                thumb
-                  ? item.poster_path
-                  : item.backdrop_path || item.poster_path
-              }`,
+              uri: `${url}${item.backdrop_path || item.poster_path}`,
             };
             if (!(item.backdrop_path && item.poster_path)) return null;
             else
@@ -99,17 +98,10 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
                     navigation.navigate("CardDetail", {
                       data: item,
                       which: "movie",
+                      mode: mode,
                     });
                   }}
-                  style={
-                    thumb
-                      ? mode
-                        ? styles.viewStyleThumb
-                        : Light.viewStyleThumb
-                      : mode
-                      ? styles.viewStyle
-                      : Light.viewStyle
-                  }
+                  style={mode ? styles.viewStyle : Light.viewStyle}
                 >
                   <Image
                     source={image}
@@ -127,7 +119,7 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
         <ActivityIndicator
           size="large"
           color="#0000ff"
-          style={{ flex: 1, height: thumb ? 180 : 120, alignSelf: "center" }}
+          style={{ flex: 1, height: 120, alignSelf: "center" }}
         />
       </>
     );
@@ -135,13 +127,6 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
 
 //Styles
 const styles = StyleSheet.create({
-  viewStyleThumb: {
-    height: 180,
-    width: 120,
-    marginHorizontal: 5,
-    marginBottom: 10,
-  },
-
   viewStyle: {
     overflow: "hidden",
     height: 120,
@@ -167,24 +152,10 @@ const styles = StyleSheet.create({
 });
 
 const Light = StyleSheet.create({
-  viewStyleThumb: {
-    height: 180,
-    width: 120,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "black",
-    marginHorizontal: 5,
-    marginBottom: 10,
-    overflow: "hidden",
-  },
-
   viewStyle: {
     overflow: "hidden",
     height: 120,
     width: 200,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "black",
     marginHorizontal: 5,
     marginBottom: 10,
   },
@@ -198,6 +169,9 @@ const Light = StyleSheet.create({
   },
   imageStyle: {
     flex: 1,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "black",
     resizeMode: "cover",
   },
 });
