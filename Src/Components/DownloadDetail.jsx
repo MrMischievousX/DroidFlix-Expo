@@ -52,8 +52,8 @@ export default function CardDetail({ route, navigation }) {
   const overview = data.description_full;
   const _720p = data.torrents.filter((torrent) => torrent.quality == "720p");
   const _1080p = data.torrents.filter((torrent) => torrent.quality == "1080p");
-  const magnet720p = `magnet:?xt=urn:btih:${_720p.hash}&dn=${magnetTitle}&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ftorrent.gresille.org%3A80%2Fannounce&tr=udp%3A%2F%2Fp4p.arenabg.com%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969`;
-  const magnet1080p = `magnet:?xt=urn:btih:${_1080p}&dn=${magnetTitle}&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ftorrent.gresille.org%3A80%2Fannounce&tr=udp%3A%2F%2Fp4p.arenabg.com%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969`;
+  const magnet720p = `magnet:?xt=urn:btih:${_720p[0].hash}&dn=${magnetTitle}&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2F9.rarbg.com%3A2880%2Fannounce&tr=udp%3A%2F%2Fp4p.arenabg.com%3A1337&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ftorrent.gresille.org%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fp4p.arenabg.ch%3A1337&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337`;
+  const magnet1080p = `magnet:?xt=urn:btih:${_1080p[0].hash}&dn=${magnetTitle}&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969%2Fannounce&tr=udp%3A%2F%2F9.rarbg.com%3A2880%2Fannounce&tr=udp%3A%2F%2Fp4p.arenabg.com%3A1337&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce&tr=udp%3A%2F%2Ftorrent.gresille.org%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fp4p.arenabg.ch%3A1337&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337`;
 
   //Functions
   const search = async (source) => {
@@ -147,13 +147,13 @@ export default function CardDetail({ route, navigation }) {
   //Styles
   const styles = StyleSheet.create({
     SuggestionsText: {
+      fontFamily: "sans-serif",
       color: mode ? "white" : "black",
       marginHorizontal: 10,
       alignSelf: "flex-start",
-      marginBottom: 5,
+      marginBottom: 10,
       fontSize: 24,
-      fontWeight: "bold",
-      fontFamily: "Bebas",
+      fontWeight: "600",
     },
     viewStyleSuggestions: {
       overflow: "hidden",
@@ -169,23 +169,19 @@ export default function CardDetail({ route, navigation }) {
       flex: 1,
       resizeMode: "cover",
     },
-    arrowView: {
-      width: 35,
-      height: 35,
-      position: "absolute",
-      borderRadius: 100,
-      marginLeft: 10,
-      marginTop: 10,
-      elevation: 31,
-      overflow: "hidden",
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: !mode ? "white" : "black",
-    },
     arrow: {
       zIndex: 2,
-      fontSize: 25,
+      fontSize: 35,
+      width: 35,
+      height: 35,
       color: !mode ? "black" : "white",
+      position: "absolute",
+      elevation: 31,
+      marginLeft: 10,
+      marginTop: 10,
+      overflow: "hidden",
+      backgroundColor: !mode ? "white" : "black",
+      borderRadius: 35,
     },
     playButton: {
       elevation: 31,
@@ -287,13 +283,11 @@ export default function CardDetail({ route, navigation }) {
   if (Load) {
     return (
       <>
-        <View style={styles.arrowView}>
-          <Ionicons
-            name="arrow-back"
-            style={styles.arrow}
-            onPress={() => navigation.goBack()}
-          />
-        </View>
+        <Feather
+          name="arrow-left-circle"
+          style={styles.arrow}
+          onPress={() => navigation.goBack()}
+        />
         <ScrollView
           style={{ backgroundColor: mode ? "black" : "white" }}
           ref={scrollRef}
@@ -403,7 +397,14 @@ export default function CardDetail({ route, navigation }) {
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                  onPress={() => Linking.openURL(magnet720p)}
+                  onPress={() => {
+                    Linking.openURL(magnet720p).catch(function (err) {
+                      Alert.alert(
+                        "Torrent Downloader is Missing",
+                        "Install Utorrent to proceed."
+                      );
+                    });
+                  }}
                 >
                   <Feather name="download" size={24} color="#2196F3" />
                   <Text
@@ -423,7 +424,14 @@ export default function CardDetail({ route, navigation }) {
                     justifyContent: "center",
                     alignItems: "center",
                   }}
-                  onPress={() => Linking.openURL(magnet1080p)}
+                  onPress={() => {
+                    Linking.openURL(magnet720p).catch(function (err) {
+                      Alert.alert(
+                        "Torrent Downloader is Missing",
+                        "Install Utorrent to proceed."
+                      );
+                    });
+                  }}
                 >
                   <Feather name="download" size={24} color="#2196F3" />
                   <Text
@@ -460,6 +468,14 @@ export default function CardDetail({ route, navigation }) {
               </View>
               <Text style={styles.overview}>{overview}</Text>
             </View>
+            <View
+              style={{
+                borderBottomColor: mode ? "white" : "black",
+                borderBottomWidth: 1,
+                marginBottom: 20,
+                width: windowWidth / 1.3,
+              }}
+            />
             <List data={suggestions} navigation={navigation} />
             {/*  */}
           </View>

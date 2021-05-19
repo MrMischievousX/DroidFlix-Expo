@@ -166,6 +166,7 @@ export default function Homescreen({ navigation, current }) {
             navigation={navigation}
           />
           <Card
+            which="tv"
             thumb={false}
             mode={Dark}
             title="Popular Tv shows"

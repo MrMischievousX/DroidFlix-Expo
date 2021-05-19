@@ -19,7 +19,14 @@ const fetchFonts = async () => {
   });
 };
 
-export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
+export default function Card({
+  title,
+  fetchUrl,
+  which = "movie",
+  thumb,
+  mode,
+  navigation,
+}) {
   //States
   const [movies, setmovies] = useState([]);
   const [Load, setload] = useState(false);
@@ -96,7 +103,7 @@ export default function Card({ title, fetchUrl, thumb, mode, navigation }) {
                   onPress={() => {
                     navigation.navigate("CardDetail", {
                       data: item,
-                      which: "movie",
+                      which: which,
                       mode: mode,
                     });
                   }}

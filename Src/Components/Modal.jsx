@@ -34,15 +34,19 @@ const App = ({ setload, mode }) => {
     },
     button: {
       borderRadius: 20,
-      padding: 10,
+      paddingVertical: 8,
+      paddingHorizontal: 15,
       elevation: 2,
     },
     buttonClose: {
       backgroundColor: "#2196F3",
     },
     textStyle: {
-      color: mode ? "white" : "black",
-      fontWeight: "bold",
+      color: mode ? "white" : "white",
+      fontWeight: "600",
+      letterSpacing: 1,
+      fontFamily: "sans-serif",
+      fontSize: 20,
       textAlign: "center",
     },
     modalText: {
@@ -51,6 +55,7 @@ const App = ({ setload, mode }) => {
       marginBottom: 15,
       fontSize: 18,
       textAlign: "center",
+      fontFamily: "sans-serif",
     },
   });
 
@@ -69,9 +74,11 @@ const App = ({ setload, mode }) => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>
-              "It is recommended to use wifi as some network wont support
+              It is recommended to use wifi as some network wont support
               downloads (Illegal) also make sure to have a torrent downloader to
-              download the movies"
+              download the movies
+              {"\n"}
+              Enjoy Streaming !!!
             </Text>
             <Pressable
               style={[styles.button, styles.buttonClose]}

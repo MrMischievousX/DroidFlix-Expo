@@ -1,17 +1,21 @@
 //Imports
 import * as React from "react";
+import { useEffect } from 'react'
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Movie from "./Src/Screens/MovieScreen/Movie";
 import Search from "./Src/Screens/SearchScreen/Search";
 import Settings from "./Src/Screens/SettingScreen/Settings";
+import About from "./Src/Screens/SettingScreen/About";
 import TvShows from "./Src/Screens/TvScreen/TvShows";
 import Homescreen from "./Src/Screens/HomeScreen/Homescreen";
+import LoginScreen from "./Src/Screens/Login/LoginScreen";
 import CardDetail from "./Src/Components/CardDetail";
 import DownloadDetail from "./Src/Components/DownloadDetail";
 import { MaterialCommunityIcons, Ionicons } from "react-native-vector-icons";
 import Mainscreen from "./Mainscreen"
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 //Homestack
 const HomeStack = createStackNavigator();
@@ -75,24 +79,98 @@ function SearchStackScreen({ current, navigation }) {
   );
 }
 
+//Settingstack
+const Settingstack = createStackNavigator();
+function SettingStackScreen({ click, dark, current, navigation, status }) {
+  return (
+    <Settingstack.Navigator
+      Options={{
+        headerShown: false,
+      }}
+    >
+      <Settingstack.Screen
+        options={{
+          headerStyle: {
+            backgroundColor: current ? '#f4511e' : "red",
+          },
+          headerTintColor: current ? 'black' : "white",
+          headerTitleStyle: {
+            fontWeight: '700',
+            letterSpacing: 1
+          },
+
+        }} name="Settings" children={() => <Settings current={current} click={click} dark={dark} navigation={navigation} status={status} />} />
+      <Settingstack.Screen
+        options={{
+          headerStyle: {
+            backgroundColor: current ? '#f4511e' : "red",
+          },
+          headerTintColor: current ? 'black' : "white",
+          headerTitleStyle: {
+            fontWeight: '700',
+            letterSpacing: 1
+          },
+        }}
+        name="About" children={({ route, navigation }) => <About navigation={navigation} route={route} />} />
+    </Settingstack.Navigator>
+  );
+}
+
 
 
 //Tabnavigator
 const Tab = createBottomTabNavigator();
 export default function App() {
-  const [Load, setLoad] = React.useState(false)
+  const [Load, setLoad] = React.useState(true)
+  const [Login, setLogin] = React.useState(false)
   const [dark, setdark] = React.useState(true)
-  if (!Load) {
+
+  const storeData = async (value) => {
+    try {
+      await AsyncStorage.setItem("Login", value);
+      console.log(await AsyncStorage.getItem("Login"))
+    } catch (e) {
+      console.log(e)
+    }
+  };
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem("Login");
+      if (value == "Login") {
+        setLoad(false)
+        setLogin(false)
+      }
+      else {
+        setLoad(true)
+        setLogin(true)
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  };
+
+  useEffect(() => {
+    getData();
+    return () => {
+    }
+  }, [])
+
+  if (Load) {
     return (
       <>
-        <Mainscreen click={setLoad} />
+        <Mainscreen Login={setLogin} click={setLoad} />
       </>
     );
+  }
+  else if (Login) {
+    return <LoginScreen Login={setLogin} status={storeData} />
   }
   else {
     return (
       <NavigationContainer>
         <Tab.Navigator
+          initialRouteName="Home"
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color }) => {
               let iconName;
@@ -145,7 +223,7 @@ export default function App() {
           <Tab.Screen name="Search"
             children={({ navigation }) => <SearchStackScreen current={dark} navigation={navigation} />} />
           <Tab.Screen name="Settings"
-            children={(navigation) => <Settings click={setLoad} dark={setdark} navigation={navigation} current={dark} />} />
+            children={({ navigation }) => <SettingStackScreen click={setLoad} dark={setdark} navigation={navigation} current={dark} status={storeData} />} />
         </Tab.Navigator>
       </NavigationContainer>
     );

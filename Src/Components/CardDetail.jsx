@@ -9,8 +9,9 @@ import {
   ImageBackground,
   ActivityIndicator,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
-import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { AntDesign, FontAwesome, Feather } from "@expo/vector-icons";
 import axios from "../Components/axios";
 import * as Font from "expo-font";
 import Cast from "./Cast";
@@ -151,23 +152,18 @@ export default function CardDetail({ route, navigation }) {
 
   //Styles
   const styles = StyleSheet.create({
-    arrowView: {
-      width: 35,
-      height: 35,
-      position: "absolute",
-      borderRadius: 100,
-      marginLeft: 10,
-      marginTop: 10,
-      elevation: 31,
-      overflow: "hidden",
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: !mode ? "white" : "black",
-    },
     arrow: {
       zIndex: 2,
-      fontSize: 25,
+      fontSize: 35,
+      width: 35,
+      height: 36,
       color: !mode ? "black" : "white",
+      position: "absolute",
+      elevation: 31,
+      marginLeft: 10,
+      marginTop: 10,
+      backgroundColor: !mode ? "white" : "black",
+      borderRadius: 100,
     },
     playButton: {
       elevation: 31,
@@ -269,13 +265,11 @@ export default function CardDetail({ route, navigation }) {
   if (Load) {
     return (
       <>
-        <View style={styles.arrowView}>
-          <Ionicons
-            name="arrow-back"
-            style={styles.arrow}
-            onPress={() => navigation.goBack()}
-          />
-        </View>
+        <Feather
+          name="arrow-left-circle"
+          style={styles.arrow}
+          onPress={() => navigation.goBack()}
+        />
         <ScrollView
           style={{ backgroundColor: mode ? "black" : "white" }}
           ref={scrollRef}
@@ -394,7 +388,14 @@ export default function CardDetail({ route, navigation }) {
               </View>
               <Text style={styles.overview}>{data.overview}</Text>
             </View>
-
+            <View
+              style={{
+                borderBottomColor: mode ? "white" : "black",
+                borderBottomWidth: 1,
+                marginBottom: 20,
+                width: windowWidth / 1.3,
+              }}
+            />
             <Details check={same} mode={mode} />
 
             {/*  */}

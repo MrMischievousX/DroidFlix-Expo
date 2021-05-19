@@ -77,6 +77,8 @@ export default function Search({ navigation, current }) {
     return () => {};
   }, []);
 
+  //Consoles
+
   //Styles
   const styles = StyleSheet.create({
     header: {

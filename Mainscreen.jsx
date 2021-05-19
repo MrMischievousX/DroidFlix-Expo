@@ -35,7 +35,7 @@ export default function Mainscreen(props) {
             <View style={styles.textView}>
               <Text style={styles.text}>Unlimited</Text>
               <Text style={styles.text}>entertainment,</Text>
-              <Text style={styles.text}>one low price.</Text>
+              <Text style={styles.text}>Free of Cost.</Text>
               <Text
                 style={{
                   color: "white",
@@ -46,12 +46,15 @@ export default function Mainscreen(props) {
                   textAlign: "center",
                 }}
               >
-                All of DroidFlix, starting at just ₹ 199
+                All of DroidFlix, Free for Everyone
               </Text>
               <View style={{ justifyContent: "center", alignItems: "center" }}>
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => props.click(true)}
+                  onPress={() => {
+                    props.click(false);
+                    props.Login(true);
+                  }}
                 >
                   <Text style={styles.ButtonView}>Get Started </Text>
                 </TouchableOpacity>
