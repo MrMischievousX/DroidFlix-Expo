@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   textView: {
     textAlign: "center",
-    marginTop: windowHeight / 1.8,
+    marginTop: windowHeight / 2,
     marginBottom: windowHeight / 8,
   },
   text: {

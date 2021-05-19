@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Linking,
+  ScrollView,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
@@ -45,12 +46,13 @@ export default function About({ route, navigation }) {
       letterSpacing: 1.3,
       textAlign: "center",
       marginTop: 30,
+      marginBottom: 60,
       color: current ? "white" : "black",
     },
   });
 
   return (
-    <View
+    <ScrollView
       style={{
         paddingTop: 30,
         flex: 1,
@@ -137,6 +139,6 @@ export default function About({ route, navigation }) {
         </View>
       </View>
       <Text style={styles.akash}> Made with ❤️ Akash</Text>
-    </View>
+    </ScrollView>
   );
 }

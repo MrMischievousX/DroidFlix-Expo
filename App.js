@@ -155,6 +155,12 @@ export default function App() {
     return () => {
     }
   }, [])
+  useEffect(() => {
+    getData();
+    return () => {
+    }
+  }, [dark])
+
 
   if (Load) {
     return (
@@ -164,7 +170,7 @@ export default function App() {
     );
   }
   else if (Login) {
-    return <LoginScreen Login={setLogin} status={storeData} />
+    return <LoginScreen Login={setLogin} current={dark} status={storeData} />
   }
   else {
     return (

@@ -72,7 +72,7 @@ export default function Settings({ click, dark, current, navigation, status }) {
           size={70}
           onPress={() => {
             dark(!current);
-            click(false);
+            click(true);
             setchng(!chng);
           }}
         />
