@@ -16,7 +16,6 @@ import Card from "../../Components/Card";
 import axios from "../../Components/axios";
 import request from "../../Components/request";
 import { LinearGradient } from "expo-linear-gradient";
-import api from "../../../api";
 
 export default function Homescreen({ navigation, current }) {
   //States
@@ -34,8 +33,6 @@ export default function Homescreen({ navigation, current }) {
         );
         setload(true);
       });
-
-    // console.log(axios.get(`movie/now_playing?api_key=${api}`));
   }
 
   //Constants

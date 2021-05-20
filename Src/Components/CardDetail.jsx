@@ -9,7 +9,6 @@ import {
   ImageBackground,
   ActivityIndicator,
   Dimensions,
-  TouchableOpacity,
 } from "react-native";
 import { AntDesign, FontAwesome, Feather } from "@expo/vector-icons";
 import axios from "../Components/axios";
@@ -148,6 +147,7 @@ export default function CardDetail({ route, navigation }) {
       source.cancel();
     };
   }, []);
+
   //Consoles
 
   //Styles

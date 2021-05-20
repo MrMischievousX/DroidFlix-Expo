@@ -1,3 +1,4 @@
+//Import
 import React from "react";
 import {
   View,
@@ -9,9 +10,11 @@ import {
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
+//Export Function
 export default function About({ route, navigation }) {
   const { current } = route.params;
 
+  //Styles
   const styles = StyleSheet.create({
     textStart: {
       fontSize: 16,
@@ -51,6 +54,7 @@ export default function About({ route, navigation }) {
     },
   });
 
+  //Main Function
   return (
     <ScrollView
       style={{

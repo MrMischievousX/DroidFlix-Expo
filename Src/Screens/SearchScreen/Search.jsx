@@ -1,3 +1,4 @@
+//Import
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -16,13 +17,15 @@ import Modal from "../../Components/Modal";
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-//
+//Export Function
 export default function Search({ navigation, current }) {
   const [Dark, setmode] = useState(true);
   const [load, setload] = useState(false);
   const [text, setText] = useState("Harry Potter");
   const [Show, setshow] = useState(false);
   const [movies, setmovies] = useState([]);
+
+  //Functions
   const search = async (text) => {
     const term = text.split(" ").join("%20");
     await axiosX
@@ -34,8 +37,6 @@ export default function Search({ navigation, current }) {
         setshow(true);
       });
   };
-
-  //Functions
   const List = ({ data, navigation }) => {
     return (
       <>

@@ -19,6 +19,7 @@ const fetchFonts = async () => {
   });
 };
 
+//Export Function
 export default function Card({
   title,
   fetchUrl,

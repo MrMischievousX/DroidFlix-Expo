@@ -11,7 +11,7 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import TvCard from "../../Components/TvCard";
 import axios from "../../Components/axios";
 import request from "../../Components/request";

@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import axios from "../Components/axios";
-
 import api from "../../api";
 
 //Constants

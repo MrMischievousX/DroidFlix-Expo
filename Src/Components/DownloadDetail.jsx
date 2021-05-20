@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
   Linking,
 } from "react-native";
-import { AntDesign, FontAwesome, Ionicons, Feather } from "@expo/vector-icons";
+import { AntDesign, FontAwesome, Feather } from "@expo/vector-icons";
 import axiosX from "axios";
 import * as Font from "expo-font";
 
@@ -425,7 +425,7 @@ export default function CardDetail({ route, navigation }) {
                     alignItems: "center",
                   }}
                   onPress={() => {
-                    Linking.openURL(magnet720p).catch(function (err) {
+                    Linking.openURL(magnet1080p).catch(function (err) {
                       Alert.alert(
                         "Torrent Downloader is Missing",
                         "Install Utorrent to proceed."

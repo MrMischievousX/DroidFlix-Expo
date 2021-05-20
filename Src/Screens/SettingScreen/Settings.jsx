@@ -1,3 +1,4 @@
+//Import
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import {
@@ -7,8 +8,12 @@ import {
   AntDesign,
 } from "@expo/vector-icons";
 
+//Export Function
 export default function Settings({ click, dark, current, navigation, status }) {
+  //States
   const [chng, setchng] = useState(false);
+
+  //Styles
   const styles = StyleSheet.create({
     switch: {
       color: current ? "white" : "black",
@@ -22,6 +27,7 @@ export default function Settings({ click, dark, current, navigation, status }) {
     },
   });
 
+  //Main Function
   return (
     <View
       style={{

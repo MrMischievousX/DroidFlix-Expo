@@ -10,8 +10,6 @@ import {
 } from "react-native";
 import MovieCard from "../../Components/MovieCard";
 import MovieMainCard from "../../Components/MovieMainCard";
-import { MaterialCommunityIcons, AntDesign } from "@expo/vector-icons";
-import axios from "../../Components/axios";
 import request from "../../Components/request";
 
 export default function Homescreen({ navigation, current }) {

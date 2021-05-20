@@ -1,8 +1,8 @@
+//Imports
 import React, { useState } from "react";
 import {
   View,
   Text,
-  Button,
   TextInput,
   StatusBar,
   StyleSheet,
@@ -17,12 +17,13 @@ const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 export default function LoginScreen({ Login, status, current }) {
+  //States
   const [register, setregister] = useState(true);
   const [name, setname] = useState("");
   const [password, setpassword] = useState("");
   const [email, setemail] = useState("");
-  const [text, onChangeText] = React.useState("Useless Text");
 
+  //Functions
   const validationRegister = () => {
     let check = true;
     if (password.length < 6) {
@@ -119,6 +120,7 @@ export default function LoginScreen({ Login, status, current }) {
     },
   });
 
+  //Main Function
   return (
     <>
       <View
